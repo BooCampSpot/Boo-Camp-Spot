@@ -1,11 +1,16 @@
 module.exports = function(sequelize, DataTypes) {
     var Type = sequelize.define("Type", {
-      name: DataTypes.STRING
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: [5, 100]
+        }
+      }
     });
   
     Type.associate = function(models) {
-      Type.hasMany(models.HauntedPlace, {
-      });
+      Type.hasMany(models.HauntedPlace);
     };
   
     return Type;
