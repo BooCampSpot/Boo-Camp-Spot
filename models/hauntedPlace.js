@@ -24,17 +24,18 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   HauntedPlace.associate = (models) => {
-    // HauntedPlace should belong to a Type
-    // HauntedPlace cannot be created without a Type due to the foreign key constraint
+    HauntedPlace.belongsTo(models.User, {
+      foreignKey: {
+        allowNull: true
+      }
+    });
+
     HauntedPlace.belongsTo(models.Type, {
       foreignKey: {
         allowNull: false
       }
     });
-  };
 
-  HauntedPlace.associate = (models) => {
-    // HauntedPlace has many Reviews
     HauntedPlace.hasMany(models.Review);
   };
 
