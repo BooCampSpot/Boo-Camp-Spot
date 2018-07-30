@@ -2,14 +2,14 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "exampledb",
+    "database": "haunted_adventures_db",
     "host": "localhost",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": null,
-    "database": "testdb",
+    "database": "haunted_adventures_testdb",
     "host": "localhost",
     "dialect": "mysql",
     "logging": false
