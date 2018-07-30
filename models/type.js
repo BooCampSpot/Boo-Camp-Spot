@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
     });
   
     Type.associate = function(models) {
-      Type.hasMany(models.Post, {
+      Type.hasMany(models.HauntedPlace, {
       });
     };
   
