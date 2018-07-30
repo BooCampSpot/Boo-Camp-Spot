@@ -33,5 +33,10 @@ module.exports = function(sequelize, DataTypes) {
     });
   };
 
+  HauntedPlace.associate = (models) => {
+    // HauntedPlace has many Reviews
+    HauntedPlace.hasMany(models.Review);
+  };
+
   return HauntedPlace;
 };
