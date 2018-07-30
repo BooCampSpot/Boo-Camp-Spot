@@ -1,8 +1,5 @@
-// Dependencies
-// =============================================================
-
 module.exports = function(sequelize, DataTypes) {
-    const Reviews = sequelize.define('Reviews', {
+    const Review = sequelize.define('Review', {
       title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -18,26 +15,30 @@ module.exports = function(sequelize, DataTypes) {
         }
       },
       rating: {
-        type: DataTypes.integer,
-        allowNull: false
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 1, 
+          max: 5
+        }
       }
     });
   
-    Reviews.associate = (models) => {
-      // Reviews cannot be created without a User due to the foreign key constraint
-      Reviews.belongsTo(models.Users, {
+    Review.associate = (models) => {
+      // Review cannot be created without a User due to the foreign key constraint
+      Reviews.belongsTo(models.User, {
         foreignKey: {
           allowNull: false
         }
       });
       
-      // Reviews cannot be created without a haunted_place due to the foreign key constraint
-      Reviews.belongsTo(models.HauntedPlace, {
+      // Review cannot be created without a HauntedPlace due to the foreign key constraint
+      Review.belongsTo(models.HauntedPlace, {
         foreignKey: {
           allowNull: false
         }
       });
     };
   
-    return Reviews;
+    return Review;
   };
