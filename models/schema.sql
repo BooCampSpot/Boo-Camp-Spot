@@ -1,7 +1,2 @@
-DROP DATABASE IF EXISTS typesDB;
-CREATE DATABASE typesDB;
-
-CREATE TABLE types(
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL
-)
+DROP DATABASE IF EXISTS haunted_adventures_db;
+CREATE DATABASE haunted_adventures_db;
