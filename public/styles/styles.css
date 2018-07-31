@@ -1,3 +1,22 @@
+
 .list-group-item {
   line-height: 2.5;
 }
+
+#navbarRow {
+  margin-top: 0px;  
+}
+
+
+
+#sighting-button{
+  background-color: lightblue;
+  width: 220px;
+}
+
+#placeIcon {
+  background-color: lavender;
+  width: 220px;
+}
+
+
