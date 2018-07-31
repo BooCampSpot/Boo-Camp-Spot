@@ -14,11 +14,12 @@ if (config.use_env_variable) {
   var sequelize = new Sequelize(
     config.database,
     config.username,
-    process.env.DB_PASS_DEV, // config.password,
+    'root', // process.env.DB_PASS_DEV, // config.password,
     { // config
       host: config.host,
+      port: process.env.DB_PORT_DEV,
       dialect: config.dialect,
-      port: process.env.DB_PORT_DEV
+      operatorsAliases: Sequelize.Op
     }
   );
 }
