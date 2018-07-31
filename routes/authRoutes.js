@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('../config/jwt');
 const User = require('../models').User;
 
 router.post('/signup', (req, res) => {
@@ -18,7 +19,7 @@ router.post('/signup', (req, res) => {
           email: req.body.email,
           password: req.body.password
         });
-        return res.json({user: newUser});
+        return res.json({accessToken: jwt.createToken(newUser)});
       } catch(e) {
         return res.json({error: e.errors});
       };
@@ -36,7 +37,7 @@ router.post('/login', (req, res) => {
     if (!user) user = await User.findOne({where: {email: usernameOrEmail}});
 
     if (user && user.validPassword(password)) {
-      return res.json({success: 'login successful'});
+      return res.json({accessToken: jwt.createToken(user)});
     } else if (user && !user.validPassword(password)) {
       return res.json({error: 'Invalid Password!'});
     } else {
