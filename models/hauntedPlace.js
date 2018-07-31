@@ -4,21 +4,30 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [5, 100]
+        len: {
+          args: [5, 100],
+          msg: 'Name must be between 5 to 100 characters.'
+        }
       }
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
       validate: {
-        len: [5, 500]
+        len: {
+          args: [5, 500],
+          msg: 'Description must be between 5 to 500 characters.'
+        }
       }
     },
     location: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [5, 100]
+        len: {
+          args: [5, 100],
+          msg: 'Location must be between 5 to 100 characters.'
+        }
       }
     }
   });

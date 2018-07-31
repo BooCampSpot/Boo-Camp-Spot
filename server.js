@@ -1,37 +1,39 @@
-require("dotenv").config();
-var express = require("express");
-var bodyParser = require("body-parser");
-var exphbs = require("express-handlebars");
+//===== Dependencies
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars');
 
-var db = require("./models");
+//=====
+const db = require('./models');
 
-var app = express();
-var PORT = process.env.PORT || 3000;
+//===== App
+const app = express();
+const PORT = process.env.PORT || 3000;
 
+//===== Load Routes
 const authRoutes = require('./routes/authRoutes');
+const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
 
-// Middleware
+//===== Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static('public'));
 
-// Handlebars
-app.engine(
-  "handlebars",
-  exphbs({
-    defaultLayout: "main"
-  })
-);
-app.set("view engine", "handlebars");
+//===== Handlebars
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
+//===== Use Routes
 app.use('/auth', authRoutes);
+app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
 
 // Routes
-require("./routes/apiRoutes")(app);
-require("./routes/hauntedPlaceRoutes")(app);
-require("./routes/reviewRoutes")(app);
-require("./routes/htmlRoutes")(app);
-require('./routes/typeRoutes')(app);
+// require("./routes/apiRoutes")(app);
+// require("./routes/hauntedPlaceRoutes")(app);
+// require("./routes/reviewRoutes")(app);
+// require("./routes/htmlRoutes")(app);
+// require('./routes/typeRoutes')(app);
 
 var syncOptions = { force: false };
 

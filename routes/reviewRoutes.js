@@ -1,6 +1,6 @@
 var dataBase = require('../models');
 
-module.exports = function (app, res) {
+module.exports = function (app) {
     // This will get all reviews
     app.get('/api/Review', function (req, res) {
         dataBase.HauntedPlaces.findAll({}).then(function (dataBase_HauntedPlaces) {

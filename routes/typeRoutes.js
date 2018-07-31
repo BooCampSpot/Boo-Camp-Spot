@@ -1,6 +1,6 @@
 var dataBase = require('../models');
 
-module.exports = function (req, res) {
+module.exports = function (app) {
     //This gets all of the types. 
     app.get('/api/type', function(req, res){
         dataBase.type.findAll({}).then(function(dataBase_type){
