@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      unique: true,
       validate: {
         len: [2, 50]
       }
@@ -14,6 +15,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      unique: true,
       validate: {
         isEmail: true,
         len: [3, 100]
