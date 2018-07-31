@@ -24,6 +24,7 @@ app.set("view engine", "handlebars");
 
 // Routes
 require("./routes/hauntedPlaceRoutes")(app);
+require("./routes/reviewRoutes")(app);
 require("./routes/htmlRoutes")(app);
 
 var syncOptions = { force: false };
