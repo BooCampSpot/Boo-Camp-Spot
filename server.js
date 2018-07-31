@@ -2,7 +2,6 @@ require("dotenv").config();
 var express = require("express");
 var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
-//const passport = require('passport');
 
 var db = require("./models");
 
@@ -25,14 +24,14 @@ app.engine(
 );
 app.set("view engine", "handlebars");
 
-// app.use(passport.initialize());
-// app.use(passport.session());
-
 app.use('/auth', authRoutes);
 
 // Routes
 require("./routes/apiRoutes")(app);
+require("./routes/hauntedPlaceRoutes")(app);
+require("./routes/reviewRoutes")(app);
 require("./routes/htmlRoutes")(app);
+require('./routes/typeRoutes')(app);
 
 var syncOptions = { force: false };
 
