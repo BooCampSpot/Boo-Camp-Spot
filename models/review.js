@@ -27,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
   
     Review.associate = (models) => {
       // Review cannot be created without a User due to the foreign key constraint
-      Reviews.belongsTo(models.User, {
+      Review.belongsTo(models.User, {
         foreignKey: {
           allowNull: false
         }

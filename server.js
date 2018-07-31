@@ -8,6 +8,8 @@ var db = require("./models");
 var app = express();
 var PORT = process.env.PORT || 3000;
 
+const authRoutes = require('./routes/auth');
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -21,6 +23,8 @@ app.engine(
   })
 );
 app.set("view engine", "handlebars");
+
+app.use('/auth', authRoutes);
 
 // Routes
 require("./routes/apiRoutes")(app);
