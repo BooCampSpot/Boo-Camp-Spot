@@ -20,3 +20,10 @@
 }
 
 
+.fa-star:hover{
+  color: gold;
+}
+
+.starClicked {
+  color: gold;
+}
