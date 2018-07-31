@@ -1,4 +1,4 @@
-const dataBase = require('../models');
+var dataBase = require('../models');
 
 module.exports = function (req, res) {
     //This gets all of the types. 
