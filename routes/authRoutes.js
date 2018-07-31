@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models').User;
 
-// const passport = require('passport');
-// require('../config/passport')(passport);
-
 router.post('/signup', (req, res) => {
   (async() =>  {
     const userSameUsername = await User.findOne({where: {username: req.body.username}});
@@ -29,9 +26,23 @@ router.post('/signup', (req, res) => {
   })();
 });
 
-// router.post('/signup', passport.authenticate('local-signup', {
-//   successRedirect: '/dashboard', // redir to dashboard
-//   failureRedirect: '/signup', // redir back to signup page if error
-// }));
+router.post('/login', (req, res) => {
+  (async() => {
+    const usernameOrEmail = req.body.usernameOrEmail;
+    const password = req.body.password;
+    let user;
+
+    user = await User.findOne({where: {username: usernameOrEmail}});
+    if (!user) user = await User.findOne({where: {email: usernameOrEmail}});
+
+    if (user && user.validPassword(password)) {
+      return res.json({success: 'login successful'});
+    } else if (user && !user.validPassword(password)) {
+      return res.json({error: 'Invalid Password!'});
+    } else {
+      return res.json({error: 'Could not find user.'});
+    };
+  })();
+});
 
 module.exports = router;
