@@ -1,6 +1,7 @@
 var dataBase = require('../models');
 
 module.exports = function (req, res) {
+    //This gets all of the 
     app.get('/api/HauntedPlaces', function(HauntedPlaces){
         dataBase.HauntedPlaces.findAll({}).then(function(dataBase_HauntedPlaces){
             res.json(dataBase_HauntedPlaces);
