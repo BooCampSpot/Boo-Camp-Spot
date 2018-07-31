@@ -15,7 +15,7 @@ module.exports = function (req, res) {
     });
     //This allows the user to delete one of the haunted places. 
     app.delete('/api/HauntedPlaces/:id', function(req, res){
-        dataBase.HauntedPlaces.destroy({ where: { id: req.params.id } }).then(function(dataBase_HauntedPlaces){
+        dataBase.HauntedPlaces.post.destroy({ where: { id: req.params.id } }).then(function(dataBase_HauntedPlaces){
             res.json(dataBase_HauntedPlaces);
         });
     });
@@ -24,3 +24,4 @@ module.exports = function (req, res) {
         res.render('404 Error')
     })
 }
+//Incomplete
