@@ -2,13 +2,14 @@ require("dotenv").config();
 var express = require("express");
 var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
+//const passport = require('passport');
 
 var db = require("./models");
 
 var app = express();
 var PORT = process.env.PORT || 3000;
 
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/authRoutes');
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,6 +24,9 @@ app.engine(
   })
 );
 app.set("view engine", "handlebars");
+
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use('/auth', authRoutes);
 
