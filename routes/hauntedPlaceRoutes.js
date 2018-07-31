@@ -7,6 +7,16 @@ module.exports = function (req, res) {
             res.json(dataBase_HauntedPlaces);
         })
     });
+    //This is used to find a search for a single haunted place. 
+    app.get("/api/HauntedPlaces/:id", function(req, res){
+        dataBase.HauntedPlaces.findOne({
+            where: {
+                id: req.params.id
+            }
+        }).then(function(response){
+            res.json(response);
+        })
+    })
     //This allows the user to post new Haunted Places.
     app.post('/api/HauntedPlaces', function(req, res){
         dataBase.HauntedPlaces.create(req.body).then(function(dataBase_HauntedPlaces){
@@ -24,4 +34,3 @@ module.exports = function (req, res) {
         res.render('404 Error')
     })
 }
-//Incomplete
