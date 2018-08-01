@@ -42,8 +42,7 @@ router.post('/', passport.authenticate('auth-user', {session: false}), (req, res
   });
 });
 
-// update Haunted Place; auth user required
-// haunted place must belong to user
+// update Haunted Place; auth user required -> haunted place must belong to user
 router.put('/:id', passport.authenticate('auth-user-has-place', {session: false}), (req, res) => {
   HauntedPlace.update({
     name: req.body.name,
@@ -67,8 +66,7 @@ router.put('/:id', passport.authenticate('auth-user-has-place', {session: false}
   });;
 });
 
-// delete Haunted Place; auth user required
-// haunted place must belong to user
+// delete Haunted Place; auth user required -> haunted place must belong to user
 router.delete('/:id', passport.authenticate('auth-user-has-place', {session: false}), (req, res) => {
   HauntedPlace.destroy({
     where: {
