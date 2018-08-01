@@ -15,7 +15,10 @@ router.get('/', passport.authenticate('auth-admin', {session: false}), (req, res
 
 // get one User, with its Haunted Places and Reviews; no auth required
 router.get('/:id', (req, res) => {
-  User.findAll({
+  User.findOne({
+    where: {
+      id: req.params.id
+    },
     include: [{
       model: HauntedPlace, 
       required: true

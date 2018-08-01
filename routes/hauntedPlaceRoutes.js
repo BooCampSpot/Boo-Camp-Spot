@@ -48,7 +48,7 @@ router.put('/:id', passport.authenticate('auth-user-has-place', {session: false}
     name: req.body.name,
     description: req.body.description,
     location: req.body.location,
-    UserId: req.user.id,
+    // UserId: req.user.id,
     TypeId: req.body.TypeId
   },
   {

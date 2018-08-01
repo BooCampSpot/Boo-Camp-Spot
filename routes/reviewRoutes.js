@@ -58,8 +58,8 @@ router.put('/:id', passport.authenticate('auth-user-has-review', {session: false
     title: req.body.title,
     body: req.body.body,
     rating: req.body.rating,
-    UserId: req.user.id,
-    HauntedPlaceId: req.params.haunted_place_id
+    // UserId: req.user.id,
+    // HauntedPlaceId: req.params.haunted_place_id
   },
   {
     where: {
