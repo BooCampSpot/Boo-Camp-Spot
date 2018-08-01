@@ -19,7 +19,7 @@ const userRoutes = require('./routes/userRoutes');
 const typeRoutes = require('./routes/typeRoutes');
 const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
-
+const adminRoutes = require('./routes/adminRoutes');
 
 //===== Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,6 +36,7 @@ app.use('/api/v1/Users', userRoutes);
 app.use('/api/v1/Types', typeRoutes);
 app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
 app.use('/api/v1/HauntedPlaces/:haunted_place_id/Reviews', reviewRoutes);
+app.use('/api/admin', passport.authenticate('auth-admin', {session: false}), adminRoutes);
 
 var syncOptions = { force: false };
 

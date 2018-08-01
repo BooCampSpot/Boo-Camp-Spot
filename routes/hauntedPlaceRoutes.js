@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const HauntedPlace = require('../models').HauntedPlace;
+const Review = require('../models').Review;
 const passport = require('passport');
 require('../config/passport');
 
@@ -11,12 +12,16 @@ router.get('/', (req, res) => {
   });
 });
 
-// get one Haunted Place (by Id); no auth required
+// get one Haunted Place, with Reviews; no auth required
 router.get('/:id', (req, res) => {
   HauntedPlace.findOne({
     where: {
         id: req.params.id
-    }
+    },
+    include: [{
+      model: Review, 
+      required: true
+    }]
   }).then(result => {
     res.json(result);
   });

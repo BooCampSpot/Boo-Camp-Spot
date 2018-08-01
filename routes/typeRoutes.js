@@ -24,42 +24,4 @@ router.get('/:id/HauntedPlaces', (req, res) => {
   });
 });
 
-// create Type; auth admin required
-router.post('/', passport.authenticate('auth-admin', {session: false}), (req, res) => {
-  Type.create({
-    name: req.body.name,
-  }).then(result => {
-    res.json(result);
-  }).catch(err => {
-    res.json(err);
-  });
-});
-
-// update Type; auth admin required
-router.put('/:id', passport.authenticate('auth-admin', {session: false}), (req, res) => {
-  Type.update({
-    name: req.body.name,
-  },
-  {
-    where: {
-      id: req.params.id
-    }
-  }).then(result => {
-    res.json(result); // 1 (successful)
-  }).catch(err => {
-    res.json(err);
-  });;
-});
-
-// delete Type; auth admin required
-router.delete('/:id', passport.authenticate('auth-admin', {session: false}), (req, res) => {
-  Type.destroy({
-    where: {
-      id: req.params.id
-    }
-  }).then(result => {
-    res.json(result); // 1 (successful), 0 (unsuccessful)
-  });
-});
-
 module.exports = router;
