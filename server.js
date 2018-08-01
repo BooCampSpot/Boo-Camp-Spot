@@ -1,37 +1,44 @@
-require("dotenv").config();
-var express = require("express");
-var bodyParser = require("body-parser");
-var exphbs = require("express-handlebars");
+//===== Dependencies
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars');
+const passport = require('passport');
+require('./config/passport');
 
-var db = require("./models");
+//===== Database/Models
+const db = require('./models');
 
-var app = express();
-var PORT = process.env.PORT || 3000;
+//===== App
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-//const authRoutes = require('./routes/authRoutes');
+//===== Load Routes
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const typeRoutes = require('./routes/typeRoutes');
+const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
-// Middleware
+//===== Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static('public'));
 
-// Handlebars
-app.engine(
-  "handlebars",
-  exphbs({
-    defaultLayout: "main"
-  })
-);
-app.set("view engine", "handlebars");
+//===== Handlebars
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
-//app.use('/auth', authRoutes);
+//===== Use Routes
+app.use('/auth', authRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/types', typeRoutes);
+app.use('/api/v1/hauntedplaces', hauntedPlaceRoutes);
+app.use('/api/v1/hauntedplaces/:haunted_place_id/reviews', reviewRoutes);
+app.use('/api/admin', passport.authenticate('auth-admin', {session: false}), adminRoutes);
 
-// Routes
-//require("./routes/apiRoutes")(app);
-//require("./routes/hauntedPlaceRoutes")(app);
-//require("./routes/reviewRoutes")(app);
 require("./routes/htmlRoutes")(app);
-//require('./routes/typeRoutes')(app);
 
 var syncOptions = { force: false };
 
