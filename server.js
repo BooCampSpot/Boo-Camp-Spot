@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 //===== Load Routes
 const authRoutes = require('./routes/authRoutes');
-// const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes');
 const typeRoutes = require('./routes/typeRoutes');
 const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
@@ -32,18 +32,10 @@ app.set('view engine', 'handlebars');
 
 //===== Use Routes
 app.use('/auth', authRoutes);
+app.use('/api/v1/Users', userRoutes);
 app.use('/api/v1/Types', typeRoutes);
 app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
 app.use('/api/v1/HauntedPlaces/:haunted_place_id/Reviews', reviewRoutes);
-
-// app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);
-
-// Routes
-// require("./routes/apiRoutes")(app);
-// require("./routes/hauntedPlaceRoutes")(app);
-// require("./routes/reviewRoutes")(app);
-// require("./routes/htmlRoutes")(app);
-// require('./routes/typeRoutes')(app);
 
 var syncOptions = { force: false };
 
