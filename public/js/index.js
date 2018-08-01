@@ -10,7 +10,8 @@ var $threeStar = $("#threeStar");
 var $fourStar = $("#fourStar");
 var $fiveStar = $("#fiveStar");
 var $reviewSubmit = $("#reviewSubmit");
-var reviewStar = 0
+var reviewStar = 0;
+var reviewLocationType = $("#reviewLocationType")
 
 
 
@@ -140,9 +141,9 @@ $reviewSubmit.on("click", function (){
   event.preventDefault();
   var review = {
     reviewLocation: $("#reviewLocation").val(),
+    reviewLocationType: $("#reviewLocationType").val(),
     reviewStar: reviewStar,
     reviewText: $("#reviewText").val(),
   };
-
 });
 

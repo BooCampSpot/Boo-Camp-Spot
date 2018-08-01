@@ -1,10 +1,24 @@
-<form>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6" id="reviewFormContainer">
+  <form id="reviewForm">
+    <div class="form-group"><h1>Submit Your Review</h1></div>
   <div class="form-group">
-    <label for="locationNameForm">Location name</label>
-    <input type="text" class="form-control" id="reviewLocation">
+    <label for="locationNameForm" id="locationNameReview"><h4>Location name</h4></label>
+    <input type="text" class="form-control" id="reviewLocation" value="">
   </div>
   <div class="form-group">
-    <label for="reviewSelect">Rating</label>
+    <h4>
+    Location type
+    </h4>
+    <select class="form-control" id="reviewLocationType">
+      {{#each types}}
+        <option>{{name}}</option>
+      {{/each}}
+    </select>
+    </div>
+  <div class="form-group">
+    <label for="reviewSelect"><h4>Rating</h4></label>
       <div class="star-rating"> 
         <btn class="fa fa-star" data-rating="1" data-selected="false" id="oneStar"></btn>
         <btn class="fa fa-star" data-rating="2" data-selected="false" id="twoStar"></btn>
@@ -15,8 +29,11 @@
     </select>
   </div>
     <div class="form-group">
-    <label for="reviewText" >Please enter your review</label>
+    <label for="reviewText"><h4>Please enter your review</h4></label>
     <textarea class="form-control" id="reviewText" rows="3"></textarea>
   </div>
     <button type="submit" class="btn btn-primary" id="reviewSubmit">Submit</button>
 </form>
+</div>
+</div>
+</div>

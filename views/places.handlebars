@@ -1,13 +1,17 @@
 {{!-- Need to reference source to input data --}}
-
+  {{#each places}}
 <div class="card" style="width: 42rem;" id="placeCard">
   <br>
   <img class="card-img-top" src="./images/forest-light-fog-mist-night-house-948848-pxhere.com.jpg" alt="Card image cap" id="placeImage">
   <div class="card-body">
-    <h4 class="card-title" id="placeTitle">Haunted Place</h4>
-    <p class="card-text" id="placeDescription">Place description</p>
+    <div class="fa fa-star ratingStar"></div>
+    <br>
+    <h4 class="card-title" id="placeTitle">{{name}}</h4>
+    <p class="card-text" id="placeDescription">{{description}}</p>
   </div>
   <div class="card-body">
     <a href="#" class="card-link">Reviews</a>
   </div>
 </div>
+<br>
+  {{/each}}
