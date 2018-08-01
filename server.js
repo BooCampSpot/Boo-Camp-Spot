@@ -32,10 +32,10 @@ app.set('view engine', 'handlebars');
 
 //===== Use Routes
 app.use('/auth', authRoutes);
-app.use('/api/v1/Users', userRoutes);
-app.use('/api/v1/Types', typeRoutes);
-app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
-app.use('/api/v1/HauntedPlaces/:haunted_place_id/Reviews', reviewRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/types', typeRoutes);
+app.use('/api/v1/hauntedplaces', hauntedPlaceRoutes);
+app.use('/api/v1/hauntedplaces/:haunted_place_id/reviews', reviewRoutes);
 app.use('/api/admin', passport.authenticate('auth-admin', {session: false}), adminRoutes);
 
 var syncOptions = { force: false };
