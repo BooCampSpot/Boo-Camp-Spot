@@ -1,99 +1,148 @@
 // Get references to page elements
-var $exampleText = $("#example-text");
-var $exampleDescription = $("#example-description");
-var $submitBtn = $("#submit");
-var $exampleList = $("#example-list");
 
-// The API object contains methods for each kind of request we'll make
-var API = {
-  saveExample: function(example) {
-    return $.ajax({
-      headers: {
-        "Content-Type": "application/json"
-      },
-      type: "POST",
-      url: "api/examples",
-      data: JSON.stringify(example)
-    });
-  },
-  getExamples: function() {
-    return $.ajax({
-      url: "api/examples",
-      type: "GET"
-    });
-  },
-  deleteExample: function(id) {
-    return $.ajax({
-      url: "api/examples/" + id,
-      type: "DELETE"
-    });
+var $sightingButton = $("#sighting-button");
+var $placeButton = $("#place-button");
+var $userLogin = $("#user-login");
+var $reviewLocation = $("#reviewLocation");
+var $oneStar = $("#oneStar");
+var $twoStar = $("#twoStar");
+var $threeStar = $("#threeStar");
+var $fourStar = $("#fourStar");
+var $fiveStar = $("#fiveStar");
+var $reviewSubmit = $("#reviewSubmit");
+var reviewStar = 0
+
+
+
+// Toggle review stars and store review value
+$oneStar.on("click", function() {
+
+  $twoStar.removeClass("starClicked");
+  $threeStar.removeClass("starClicked");
+  $fourStar.removeClass("starClicked");
+  $fiveStar.removeClass("starClicked");
+  $twoStar.attr("data-selected", "false");
+  $threeStar.attr("data-selected", "false");
+  $fourStar.attr("data-selected", "false");
+  $fiveStar.attr("data-selected", "false");
+
+  if ($(this).attr("data-selected") === "false") {
+    $(this).addClass("starClicked");
+    $(this).attr("data-selected", "true");
+    var reviewStar = 1;
+  } else {
+    $(this).removeClass("starClicked");
+    $(this).attr("data-selected", "false");
+  };
+  return reviewStar;
+});
+
+
+$twoStar.on("click", function() {
+
+  $threeStar.removeClass("starClicked");
+  $fourStar.removeClass("starClicked");
+  $fiveStar.removeClass("starClicked");
+  $threeStar.attr("data-selected", "false");
+  $fourStar.attr("data-selected", "false");
+  $fiveStar.attr("data-selected", "false");
+
+  if ($(this).attr("data-selected") === "false") {
+    $(this).addClass("starClicked");
+    $oneStar.addClass("starClicked");
+    $(this).attr("data-selected", "true");
+    $oneStar.attr("data-selected", "true");
+    reviewStar = 2;
+  } else {
+    $(this).removeClass("starClicked");
+    $oneStar.removeClass("starClicked");
+    $(this).attr("data-selected", "false");
+    $oneStar.attr("data-selected", "false");
   }
-};
+  return reviewStar;
+});
 
-// refreshExamples gets new examples from the db and repopulates the list
-var refreshExamples = function() {
-  API.getExamples().then(function(data) {
-    var $examples = data.map(function(example) {
-      var $a = $("<a>")
-        .text(example.text)
-        .attr("href", "/example/" + example.id);
+$threeStar.on("click", function() {
 
-      var $li = $("<li>")
-        .attr({
-          class: "list-group-item",
-          "data-id": example.id
-        })
-        .append($a);
+  $fourStar.removeClass("starClicked");
+  $fiveStar.removeClass("starClicked");
+  $fourStar.attr("data-selected", "false");
+  $fiveStar.attr("data-selected", "false");
 
-      var $button = $("<button>")
-        .addClass("btn btn-danger float-right delete")
-        .text("ｘ");
+  if ($(this).attr("data-selected") === "false") {
+    $(this).addClass("starClicked");
+    $oneStar.addClass("starClicked");
+    $twoStar.addClass("starClicked");
+    $(this).attr("data-selected", "true");
+    reviewStar = 3;
+  } else {
+    $(this).removeClass("starClicked");
+    $oneStar.removeClass("starClicked");
+    $twoStar.removeClass("starClicked");
+    $(this).attr("data-selected", "false");
+    $oneStar.attr("data-selected", "false");
+    $twoStar.attr("data-selected", "false");
+  }
+  return reviewStar;
+});
 
-      $li.append($button);
+$fourStar.on("click", function() {
+  $fiveStar.removeClass("starClicked");
+  $fiveStar.attr("data-selected", "false");
 
-      return $li;
-    });
+  if ($(this).attr("data-selected") === "false") {
+    $(this).addClass("starClicked");
+    $oneStar.addClass("starClicked");
+    $twoStar.addClass("starClicked");
+    $threeStar.addClass("starClicked");
+    $(this).attr("data-selected", "true");
+    reviewStar = 4;
+  } else {
+    $(this).removeClass("starClicked");
+    $oneStar.removeClass("starClicked");
+    $twoStar.removeClass("starClicked");
+    $threeStar.removeClass("starClicked");
 
-    $exampleList.empty();
-    $exampleList.append($examples);
-  });
-};
+    $(this).attr("data-selected", "false");
+    $oneStar.attr("data-selected", "false");
+    $twoStar.attr("data-selected", "false");
+    $threeStar.attr("data-selected", "false");
+  }
+  return reviewStar;
+});
 
-// handleFormSubmit is called whenever we submit a new example
-// Save the new example to the db and refresh the list
-var handleFormSubmit = function(event) {
+$fiveStar.on("click", function() {
+  if ($(this).attr("data-selected") === "false") {
+    $(this).addClass("starClicked");
+    $oneStar.addClass("starClicked");
+    $twoStar.addClass("starClicked");
+    $threeStar.addClass("starClicked");
+    $fourStar.addClass("starClicked");
+    $(this).attr("data-selected", "true");
+    reviewStar = 5;
+  } else {
+    $(this).removeClass("starClicked");
+    $oneStar.removeClass("starClicked");
+    $twoStar.removeClass("starClicked");
+    $threeStar.removeClass("starClicked");
+    $fourStar.removeClass("starClicked");
+    $(this).attr("data-selected", "false");
+    $oneStar.attr("data-selected", "false");
+    $twoStar.attr("data-selected", "false");
+    $threeStar.attr("data-selected", "false");
+    $fourStar.attr("data-selected", "false");
+  }
+  
+});
+
+
+$reviewSubmit.on("click", function (){
   event.preventDefault();
-
-  var example = {
-    text: $exampleText.val().trim(),
-    description: $exampleDescription.val().trim()
+  var review = {
+    reviewLocation: $("#reviewLocation").val(),
+    reviewStar: reviewStar,
+    reviewText: $("#reviewText").val(),
   };
 
-  if (!(example.text && example.description)) {
-    alert("You must enter an example text and description!");
-    return;
-  }
+});
 
-  API.saveExample(example).then(function() {
-    refreshExamples();
-  });
-
-  $exampleText.val("");
-  $exampleDescription.val("");
-};
-
-// handleDeleteBtnClick is called when an example's delete button is clicked
-// Remove the example from the db and refresh the list
-var handleDeleteBtnClick = function() {
-  var idToDelete = $(this)
-    .parent()
-    .attr("data-id");
-
-  API.deleteExample(idToDelete).then(function() {
-    refreshExamples();
-  });
-};
-
-// Add event listeners to the submit and delete buttons
-$submitBtn.on("click", handleFormSubmit);
-$exampleList.on("click", ".delete", handleDeleteBtnClick);

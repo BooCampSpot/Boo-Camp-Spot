@@ -38,6 +38,8 @@ app.use('/api/v1/hauntedplaces', hauntedPlaceRoutes);
 app.use('/api/v1/hauntedplaces/:haunted_place_id/reviews', reviewRoutes);
 app.use('/api/admin', passport.authenticate('auth-admin', {session: false}), adminRoutes);
 
+require("./routes/htmlRoutes")(app);
+
 var syncOptions = { force: false };
 
 // If running a test, set syncOptions.force to true

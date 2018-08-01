@@ -1,10 +1,12 @@
 {
   "development": {
     "username": "root",
-    "password": null,
+    "password": "root",
     "database": "haunted_adventures_db",
+
     "host": "localhost",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "port": "8889"
   },
   "test": {
     "username": "root",
