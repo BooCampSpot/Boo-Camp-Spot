@@ -15,8 +15,10 @@ const PORT = process.env.PORT || 3000;
 
 //===== Load Routes
 const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
+// const userRoutes = require('./routes/userRoutes');
+const typeRoutes = require('./routes/typeRoutes');
 const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
+
 
 //===== Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,8 +32,9 @@ app.set('view engine', 'handlebars');
 //===== Use Routes
 app.use('/auth', authRoutes);
 app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
+app.use('/api/v1/Types', typeRoutes);
 
-app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);
+// app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);
 
 // Routes
 // require("./routes/apiRoutes")(app);

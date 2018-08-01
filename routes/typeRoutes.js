@@ -1,33 +1,65 @@
-var dataBase = require('../models');
+const express = require('express');
+const router = express.Router();
+const Type = require('../models').Type;
+const HauntedPlace = require('../models').HauntedPlace;
+const passport = require('passport');
+require('../config/passport');
 
-module.exports = function (app) {
-    //This gets all of the types. 
-    app.get('/api/type', function(req, res){
-        dataBase.type.findAll({}).then(function(dataBase_type){
-            res.json(dataBase_type);
-        })
-    });
-    //This is used to find a search for a single type. 
-    app.get('/api/type/:id', function(req, res){
-        dataBase.type.findOne({
-            where: {
-                id: req.params.id
-            }
-        }).then(function(response){
-            res.json(response);
-        })
-    })
-    // This has been commented out because we will not use it!
-    //============================================================
-    // //This allows the user to post new types.
-    // app.post('/api/type', function(req, res){
-    //     dataBase.type.create(req.body).then(function(dataBase_type){
-    //         res.json(dataBase_type);
-    //     })
-    // });
-    //============================================================
-    //Render a 404 error 
-    app.get('*', function(req, res){
-        res.render('404 Error')
-    })
-}
+// get all Types; no auth required
+router.get('/', (req, res) => {
+  Type.findAll({}).then(result => {
+    res.json(result);
+  });
+});
+
+// get one Type, with its Haunted Places; no auth required
+router.get('/:id/HauntedPlaces', (req, res) => {
+  Type.findAll({
+    include: [{
+      model: HauntedPlace, 
+      required: true
+    }]
+  }).then(result => {
+    res.json(result);
+  });
+});
+
+// create Type; auth admin required
+router.post('/', passport.authenticate('auth-admin', {session: false}), (req, res) => {
+  Type.create({
+    name: req.body.name,
+  }).then(result => {
+    res.json(result);
+  }).catch(err => {
+    res.json(err);
+  });
+});
+
+// update Type; auth admin required
+router.put('/:id', passport.authenticate('auth-admin', {session: false}), (req, res) => {
+  Type.update({
+    name: req.body.name,
+  },
+  {
+    where: {
+      id: req.params.id
+    }
+  }).then(result => {
+    res.json(result); // 1 (successful)
+  }).catch(err => {
+    res.json(err);
+  });;
+});
+
+// delete Type; auth admin required
+router.delete('/:id', passport.authenticate('auth-admin', {session: false}), (req, res) => {
+  Type.destroy({
+    where: {
+      id: req.params.id
+    }
+  }).then(result => {
+    res.json(result); // 1 (successful), 0 (unsuccessful)
+  });
+});
+
+module.exports = router;

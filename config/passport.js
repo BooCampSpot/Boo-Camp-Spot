@@ -8,7 +8,7 @@ opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.JWT_SECRET;
 opts.passReqToCallback = true;
 
-// jwtPayload will be user
+
 passport.use('auth-user', new JWTStrategy(opts, (req, jwtPayload, cb) => {
   return cb(null, jwtPayload);
 }));
@@ -23,6 +23,8 @@ passport.use('auth-user-has-place', new JWTStrategy(opts, (req, jwtPayload, cb) 
     return result ? cb(null, jwtPayload) : cb(null, false);
   });
 }));
+
+// auth-user-has-review
 
 passport.use('auth-admin', new JWTStrategy(opts, (req, jwtPayload, cb) => {
   return jwtPayload.admin ? cb(null, jwtPayload) : cb(null, false);
