@@ -3,8 +3,10 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
+const passport = require('passport');
+require('./config/passport');
 
-//=====
+//===== Database/Models
 const db = require('./models');
 
 //===== App
@@ -13,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 //===== Load Routes
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
 
 //===== Middleware
@@ -27,6 +30,8 @@ app.set('view engine', 'handlebars');
 //===== Use Routes
 app.use('/auth', authRoutes);
 app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
+
+app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);
 
 // Routes
 // require("./routes/apiRoutes")(app);
