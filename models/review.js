@@ -4,14 +4,20 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [5, 100]
+          len: {
+            args: [5, 100],
+            msg: 'Title must be between 5 to 100 characters.'
+          }
         }
       },
       body: {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-          len: [5, 500]
+          len: {
+            args: [5, 100],
+            msg: 'Content must be between 5 to 100 characters.'
+          }
         }
       },
       rating: {

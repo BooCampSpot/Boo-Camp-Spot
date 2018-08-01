@@ -18,6 +18,7 @@ const authRoutes = require('./routes/authRoutes');
 // const userRoutes = require('./routes/userRoutes');
 const typeRoutes = require('./routes/typeRoutes');
 const hauntedPlaceRoutes = require('./routes/hauntedPlaceRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 
 //===== Middleware
@@ -31,8 +32,9 @@ app.set('view engine', 'handlebars');
 
 //===== Use Routes
 app.use('/auth', authRoutes);
-app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
 app.use('/api/v1/Types', typeRoutes);
+app.use('/api/v1/HauntedPlaces', hauntedPlaceRoutes);
+app.use('/api/v1/HauntedPlaces/:haunted_place_id/Reviews', reviewRoutes);
 
 // app.use('/user', passport.authenticate('jwt', {session: false}), userRoutes);
 
