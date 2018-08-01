@@ -12,19 +12,24 @@ var $fiveStar = $("#fiveStar");
 var $reviewSubmit = $("#reviewSubmit");
 var reviewStar = 0
 
-var review = {
-  reviewLocation: $("#review-location").val(),
-  reviewStar: reviewStar,
-  reviewText: $("#reviewText").val(),
-}
 
 
 // Toggle review stars and store review value
 $oneStar.on("click", function() {
+
+  $twoStar.removeClass("starClicked");
+  $threeStar.removeClass("starClicked");
+  $fourStar.removeClass("starClicked");
+  $fiveStar.removeClass("starClicked");
+  $twoStar.attr("data-selected", "false");
+  $threeStar.attr("data-selected", "false");
+  $fourStar.attr("data-selected", "false");
+  $fiveStar.attr("data-selected", "false");
+
   if ($(this).attr("data-selected") === "false") {
     $(this).addClass("starClicked");
     $(this).attr("data-selected", "true");
-    reviewStar = 1;
+    var reviewStar = 1;
   } else {
     $(this).removeClass("starClicked");
     $(this).attr("data-selected", "false");
@@ -34,11 +39,20 @@ $oneStar.on("click", function() {
 
 
 $twoStar.on("click", function() {
+
+  $threeStar.removeClass("starClicked");
+  $fourStar.removeClass("starClicked");
+  $fiveStar.removeClass("starClicked");
+  $threeStar.attr("data-selected", "false");
+  $fourStar.attr("data-selected", "false");
+  $fiveStar.attr("data-selected", "false");
+
   if ($(this).attr("data-selected") === "false") {
     $(this).addClass("starClicked");
     $oneStar.addClass("starClicked");
     $(this).attr("data-selected", "true");
-    reviewStar = "2";
+    $oneStar.attr("data-selected", "true");
+    reviewStar = 2;
   } else {
     $(this).removeClass("starClicked");
     $oneStar.removeClass("starClicked");
@@ -49,12 +63,18 @@ $twoStar.on("click", function() {
 });
 
 $threeStar.on("click", function() {
+
+  $fourStar.removeClass("starClicked");
+  $fiveStar.removeClass("starClicked");
+  $fourStar.attr("data-selected", "false");
+  $fiveStar.attr("data-selected", "false");
+
   if ($(this).attr("data-selected") === "false") {
     $(this).addClass("starClicked");
     $oneStar.addClass("starClicked");
     $twoStar.addClass("starClicked");
     $(this).attr("data-selected", "true");
-    reviewStar = "3";
+    reviewStar = 3;
   } else {
     $(this).removeClass("starClicked");
     $oneStar.removeClass("starClicked");
@@ -67,18 +87,22 @@ $threeStar.on("click", function() {
 });
 
 $fourStar.on("click", function() {
+  $fiveStar.removeClass("starClicked");
+  $fiveStar.attr("data-selected", "false");
+
   if ($(this).attr("data-selected") === "false") {
     $(this).addClass("starClicked");
     $oneStar.addClass("starClicked");
     $twoStar.addClass("starClicked");
     $threeStar.addClass("starClicked");
     $(this).attr("data-selected", "true");
-    reviewStar = "4";
+    reviewStar = 4;
   } else {
     $(this).removeClass("starClicked");
     $oneStar.removeClass("starClicked");
     $twoStar.removeClass("starClicked");
     $threeStar.removeClass("starClicked");
+
     $(this).attr("data-selected", "false");
     $oneStar.attr("data-selected", "false");
     $twoStar.attr("data-selected", "false");
@@ -95,7 +119,7 @@ $fiveStar.on("click", function() {
     $threeStar.addClass("starClicked");
     $fourStar.addClass("starClicked");
     $(this).attr("data-selected", "true");
-    reviewStar = "5";
+    reviewStar = 5;
   } else {
     $(this).removeClass("starClicked");
     $oneStar.removeClass("starClicked");
@@ -108,53 +132,17 @@ $fiveStar.on("click", function() {
     $threeStar.attr("data-selected", "false");
     $fourStar.attr("data-selected", "false");
   }
-  return reviewStar;
+  
 });
 
 
 $reviewSubmit.on("click", function (){
   event.preventDefault();
-  console.log(review.reviewLocation);
-  console.log(review.reviewStar);
-  console.log(reviewText);
-})
-  ;
-/*
-var reviewFormSubmit = function(event) {
-  event.preventDefault();
-
   var review = {
-    reviewLocation: $reviewLocation.val(),
-    reviewRating: 
-
+    reviewLocation: $("#reviewLocation").val(),
+    reviewStar: reviewStar,
+    reviewText: $("#reviewText").val(),
   };
 
-  if (!(example.text && example.description)) {
-    alert("You must enter an example text and description!");
-    return;
-  }
+});
 
-  API.saveExample(example).then(function() {
-    refreshExamples();
-  });
-
-  $exampleText.val("");
-  $exampleDescription.val("");
-};
-
-// handleDeleteBtnClick is called when an example's delete button is clicked
-// Remove the example from the db and refresh the list
-var handleDeleteBtnClick = function() {
-  var idToDelete = $(this)
-    .parent()
-    .attr("data-id");
-
-  API.deleteExample(idToDelete).then(function() {
-    refreshExamples();
-  });
-};
-
-// Add event listeners to the submit and delete buttons
-$submitBtn.on("click", handleFormSubmit);
-$exampleList.on("click", ".delete", handleDeleteBtnClick);
-*/
