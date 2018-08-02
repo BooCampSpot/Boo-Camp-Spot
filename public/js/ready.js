@@ -10,16 +10,24 @@ const App = (() => {
           Render.showFormOverlayMsg('#add-haunted-place-form', msg);
           setTimeout(() => {
             redirect('/login');
-          }, 3200);
+          }, 2000);
         } else {
           Listeners.submitAddHauntedPlace();
           Render.populateTypeSelect('#add-hp-type', types);
         };
       };
 
-      if(relPath === '/signup') {
+      if (relPath === '/signup') {
         if(!user) {
           Listeners.submitSignUp();
+        } else {
+          redirect(`/u/${user.username}`);
+        };
+      };
+
+      if (relPath === '/login') {
+        if(!user) {
+          Listeners.submitLogIn();
         } else {
           redirect(`/u/${user.username}`);
         };
@@ -57,11 +65,19 @@ const Auth = (() => {
     });
   }
 
+  const loginUser = (userCreds) => {
+    return $.post({
+      url: '/auth/login',
+      data: userCreds
+    });
+  }
+
   return {
     setAccessToken,
     getAccessToken,
     destroyAccessToken,
-    createUser
+    createUser,
+    loginUser
   }
 })();
 
@@ -118,7 +134,8 @@ const Listeners = (() => {
           } else if (result.error) { // other error (unexpected)
             Render.showFormOverlayMsg('#signup-form', 'Unauthorized request.');
           } else {
-            const msg = `You have successfully signed up!`
+            const msg = `You have successfully signed up!`;
+            Auth.setAccessToken(result.accessToken);
             Render.showFormOverlayMsg('#signup-form', msg);
             setTimeout(() => {
               App.redirect(`/u/${newUser.username.replace(/ /g, '_')}`);
@@ -138,6 +155,40 @@ const Listeners = (() => {
       };
     });
   }
+
+  const submitLogIn = () => {
+    $('#login-form').submit((e) => {
+      e.preventDefault();
+
+      const userCreds = {
+        usernameOrEmail: $('#login-username-or-email').val(),
+        password: $('#login-password').val()
+      };
+
+      if (!userCreds.usernameOrEmail) {
+        Render.showInputErrMsg('#login-username-or-email', 'Cannot be blank.');
+      } else if (!userCreds.password) {
+        Render.showInputErrMsg('#login-password', 'Cannot be blank.');
+      } else {
+        Auth.loginUser(userCreds).then(result => {
+          if (result.error === 'Could not find user.') {
+            Render.showInputErrMsg('#login-username-or-email', result.error);
+          } else if (result.error === 'Invalid password!') {
+            Render.showInputErrMsg('#login-password', result.error);
+          } else if (result.error) { // other error (unexpected)
+            Render.showFormOverlayMsg('#login-form', 'Unauthorized request.');
+          } else {
+            const msg = `You have successfully logged in!`
+            Auth.setAccessToken(result.accessToken);
+            Render.showFormOverlayMsg('#login-form', msg);
+            setTimeout(() => {
+              App.redirect(`/u/${result.username.replace(/ /g, '_')}`);
+            }, 2400);
+          };
+        });
+      };
+    });
+  };
 
   const submitAddHauntedPlace = () => {
     $('#add-haunted-place-form').submit((e) => {
@@ -162,7 +213,7 @@ const Listeners = (() => {
             Render.showFormOverlayMsg('#add-haunted-place-form', msg);
             setTimeout(() => {
               App.redirect('/');
-            }, 3200);
+            }, 2000);
           }; 
         });
       } else {
@@ -180,6 +231,7 @@ const Listeners = (() => {
   return {
     signout,
     submitSignUp,
+    submitLogIn,
     submitAddHauntedPlace
   }
 })();

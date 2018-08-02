@@ -43,7 +43,10 @@ router.post('/login', (req, res) => {
     if (!user) user = await User.findOne({where: {email: usernameOrEmail}});
 
     if (user && user.validPassword(password)) {
-      return res.json({accessToken: jwt.createToken(user)});
+      return res.json({
+        accessToken: jwt.createToken(user),
+        username: user.username
+      });
     } else if (user && !user.validPassword(password)) {
       return res.json({error: 'Invalid Password!'});
     } else {
