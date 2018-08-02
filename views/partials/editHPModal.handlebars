@@ -1,0 +1,56 @@
+<!-- Modal -->
+<div class="modal fade" id="editHPModal" tabindex="-1" role="dialog" aria-labelledby="editHPLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editHPLabel">Edit Haunted Place</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="position-relative">
+          <div class="form-group">
+            <label>Type</label>
+            <select id="edit-HP-type" class="form-control"></select>
+          </div>
+          <form id="edit-HP-form">
+            <div class="form-group">
+              <label>Name</label>
+              <div class="position-relative">
+                <input id="edit-HP-name" type="text" class="form-control">
+                <div class="error-container justify-content-center align-items-center">
+                  <span class="text-monospace"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <div class="position-relative">
+                <textarea id="edit-HP-description" class="form-control" rows="3"></textarea>
+                <div class="error-container justify-content-center align-items-center">
+                  <span class="text-monospace"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <div class="position-relative">
+                <input id="edit-HP-location" type="text" class="form-control">
+                <div class="error-container justify-content-center align-items-center">
+                  <span class="text-monospace"></span>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay-container justify-content-center align-items-center">
+            <span class="text-monospace"></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="update-HP-btn" type="button" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
