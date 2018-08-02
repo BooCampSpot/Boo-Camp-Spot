@@ -1,4 +1,4 @@
-//const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 module.exports = function(sequelize, DataTypes) {
   const User = sequelize.define('User', {
@@ -34,8 +34,8 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: false
     }
   });
-/*
-  // beforeCreate hook
+
+  //beforeCreate hook
   User.beforeCreate((user, options) => {
     return user.password = bcrypt.hashSync(user.password, 8);
   });
@@ -50,7 +50,5 @@ module.exports = function(sequelize, DataTypes) {
     User.hasMany(models.HauntedPlace);
     User.hasMany(models.Review);
   };
-*/
   return User;
-  
 };
