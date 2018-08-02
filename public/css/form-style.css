@@ -1,5 +1,6 @@
 #add-haunted-place-form,
-#login-form {
+#login-form,
+#signup-form {
   background-color: #f5f5dc;
   border: 1px solid #ffa500;
 }
