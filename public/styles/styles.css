@@ -28,10 +28,6 @@
   color: gold;
 }
 
-#placeImage {
-  width: 400px;
-  margin: 0 auto;
-}
 
 #placeCard {
   background-image: url("../images/stardust.png");
@@ -43,7 +39,6 @@
  background-color: white;
  border-radius: 5px;
  color: black;
- width: 50%;
  margin: 0 auto;
  box-shadow: 0px 0px 20px 5px lightcoral;
 }
