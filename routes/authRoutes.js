@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('../config/jwt');
 const User = require('../models').User;
+const passport = require('passport');
+require('../config/passport');
+
+router.get('/user', passport.authenticate('auth-user', {session: false}), (req, res) => {
+  res.json(req.user);
+});
 
 router.post('/signup', (req, res) => {
   (async() =>  {

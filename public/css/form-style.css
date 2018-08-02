@@ -1,0 +1,40 @@
+#add-haunted-place-form {
+  background-color: #f5f5dc;
+  border: 1px solid #ffa500;
+}
+
+.overlay-container {
+  position: absolute;
+  display: none;
+  opacity: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: white;
+  background-color: #550b559f;
+  border-radius: .25rem;
+  line-height: 1.5;
+}
+.overlay-container span{
+  text-align: center;
+  width: 80%;
+}
+.error-container {
+  position: absolute;
+  display: none;
+  opacity: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,0,0,.22);
+  border-radius: .25rem;
+  line-height: 1;
+}
+.error-container span {
+  text-align: center;
+  font-size: .9rem;
+  padding: .5rem;
+  background-color: rgba(255,255,255,.85);
+}

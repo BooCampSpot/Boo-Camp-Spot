@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark py-1 mb-2 mb-sm-3">
+  <div class="container">
+    <a class="navbar-brand" href="/">Boo!Camp Spot</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/explore">Explore</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbar-types-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Types
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbar-types-dropdown">
+            {{!-- <a class="dropdown-item" href="#">Action</a> --}}
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/explore/new"><i class="fas fa-plus-circle"></i></a>
+        </li>
+      </ul>
+      <div id="navbar-signup" class="pr-3">
+        <a href="/signup" class="nav-link custom-nav-link px-0">
+          Sign Up
+        </a>
+      </div>
+      <div id="navbar-login" class="pr-3">
+        <a href="/login" class="nav-link custom-nav-link px-0">Log In</a> 
+      </div>
+      <div id="navbar-user" class="pr-3">
+        <a href="" class="nav-link custom-nav-link px-0"><i class="fas fa-user pr-2"></i> User</a>
+      </div>
+      <div id="navbar-signout" class="pr-3">
+        <a href="" class="nav-link custom-nav-link px-0">Log Out</a> 
+      </div>
+    </div>
+  </div>
+</nav>
