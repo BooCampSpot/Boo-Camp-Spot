@@ -39,8 +39,9 @@ const App = (() => {
         } else {
           const username = relPath.slice(3).replace(/ /g, ' ');
           API.getUserData(username).then(result => { 
+            Listeners.reviewModal();
             // result is array: [0] -> user data, [1] gravatarUrl
-            Render.initUserPage(result[0], result[1].gravatarUrl);
+            Render.initUserPage(result[0], result[1].gravatarUrl, user);
           });
         }
       };
@@ -116,10 +117,22 @@ const API = (() => {
     });
   }
 
+  const updateReview = (HPid, Rid, updatedReview) => {
+    return $.ajax({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}/reviews/${Rid}`,
+      type: 'PUT',
+      data: updatedReview
+    });
+  }
+
   return {
     getUserData,
     getTypes,
-    createHauntedPlace
+    createHauntedPlace,
+    updateReview
   }
 })();
 
@@ -247,11 +260,71 @@ const Listeners = (() => {
     });
   }
 
+  const reviewModal = () => {
+    $(document).on('click', '.review-modal-btn', function() {
+      $('#editDelReviewLabel').html(`Edit review for <code>${$(this).attr('data-HPname')}</code>`);
+      $('#edit-review-title').val($(this).attr('data-Rtitle'));
+      $('#edit-review-body').val($(this).attr('data-Rbody'));
+      $(`#edit-review-rating option[value="${$(this).attr('data-Rrating')}"]`).prop("selected", true);
+
+      $('#update-review-btn').attr('data-HPid', $(this).attr('data-HPid'));
+      $('#update-review-btn').attr('data-Rid', $(this).attr('data-Rid'));
+      $('#delete-review-btn').attr('data-HPid', $(this).attr('data-HPid'));
+      $('#delete-review-btn').attr('data-Rid', $(this).attr('data-Rid'));
+    });
+
+    $('#update-review-btn').click(function() {
+      const updatedReview = {
+        title: $('#edit-review-title').val(),
+        body: $('#edit-review-body').val(),
+        rating: parseInt($(`#edit-review-rating option:selected`).val())  
+      }
+      const validationResult = Validate.updatedReview(updatedReview);
+
+      if(validationResult.isValid) {
+        const HPid = $(this).attr('data-HPid');
+        const Rid = $(this).attr('data-Rid');
+
+        API.updateReview(HPid, Rid, updatedReview).then(result => {
+          if (result[0] === 1) {
+            const msg = 'Review successfully updated!'
+            // update the review in table (btn/link data and rows)
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).text(updatedReview.title);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).attr('data-Rtitle', updatedReview.title);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).attr('data-Rbody', updatedReview.body);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).attr('data-Rrating', updatedReview.rating);
+
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).parent().parent().find('td:eq(2)').text(updatedReview.body);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).parent().parent().find('td:eq(3)').text(updatedReview.rating);
+            //
+            Render.showFormOverlayMsg('#edit-review-form', msg);
+            setTimeout(() => {
+              $('#editDelReviewModal').modal('toggle');
+            }, 2000);
+          } else {  // other error (unexpected)
+            Render.showFormOverlayMsg('#edit-review-form', 'Unauthorized request.');
+          };
+        });
+      } else {
+        const titleErr = validationResult.errors.title;
+        const bodyErr = validationResult.errors.body;
+  
+        if (titleErr) Render.showInputErrMsg('#edit-review-title', titleErr);
+        if (bodyErr) Render.showInputErrMsg('#edit-review-body', bodyErr);
+      };
+    });
+
+    $('#delete-review-btn').click(function() {
+      console.log($(this).attr('data-Rid'))
+    });
+  }
+
   return {
     signout,
     submitSignUp,
     submitLogIn,
-    submitAddHauntedPlace
+    submitAddHauntedPlace,
+    reviewModal
   }
 })();
 
@@ -308,9 +381,24 @@ const Validate = (() => {
     return result;
   }
 
+  const updatedReview = (updatedReview) => {
+    const result = {
+      isValid: true,
+      errors: {
+        title: lengthErrMsg(updatedReview.title, 5, 100),
+        body: lengthErrMsg(updatedReview.body, 5, 500),
+      }
+    };
+    if (result.errors.title || result.errors.body) {
+      result.isValid = false;
+    };
+    return result;
+  }
+ 
   return {
     newUser,
-    newPlace
+    newPlace,
+    updatedReview
   }
 })();
 
@@ -334,7 +422,7 @@ const Render = (() => {
     };
   };
 
-  const initUserPage = (user, gravatarUrl) => {
+  const initUserPage = (user, gravatarUrl, authUser) => {
     const hauntedPlaces = user.HauntedPlaces;
     const reviews = user.Reviews;
 
@@ -343,33 +431,47 @@ const Render = (() => {
     $('#user-email').text(user.email);
     $('#user-createdAt').text(moment.utc(user.createdAt).local().format('MMM D, YYYY'));
 
-    for (const place of hauntedPlaces) {
-      // const $tdType = $('<td>', {text: place.TypeId});
-      const $tdName = $('<td>', {text: place.name});
-      const $tdDesc = $('<td>', {text: place.description});
-      const $tdLoc = $('<td>', {text: place.location});
-    
-      $('#collapseOne tbody').append($('<tr>').append($tdName, $tdDesc, $tdLoc));
-    };
-
-    for (const review of reviews) {
-      // const $tdHP = $('<td>', {text: review.HauntedPlaceId});
-      const $tdTitle = $('<td>', {text: review.title});
-      const $tdBody = $('<td>', {text: review.body});
-      const $tdRating = $('<td>', {text: review.rating});
-      const $tdCreatedAt = $('<td>', {text: moment.utc(user.createdAt).local().format('ddd MMM D, YYYY h:mm a')});
-    
-      $('#collapseTwo tbody').append($('<tr>').append($tdTitle, $tdBody, $tdRating, $tdCreatedAt));
-    };
-
     if (!hauntedPlaces.length) {
       $('#collapseOne table').css('display', 'none');
       $('#collapseOne .alert').css('display', 'block');
+    } else {
+      for (const place of hauntedPlaces) {
+        const $tdType = $('<td>', {text: place.Type.name});
+        const $tdName = $('<td>', {text: place.name});
+        const $tdDesc = $('<td>', {text: place.description});
+        const $tdLoc = $('<td>', {text: place.location});
+      
+        $('#collapseOne tbody').append($('<tr>').append($tdType, $tdName, $tdDesc, $tdLoc));
+      };
     };
 
     if(!reviews.length) {
       $('#collapseTwo table').css('display', 'none');
       $('#collapseTwo .alert').css('display', 'block');
+    } else {
+      for (const review of reviews) {
+        const $tdHP = $('<td>', {
+          text: review.HauntedPlace ? review.HauntedPlace.name : '' 
+        });
+        const $tdBody = $('<td>', {text: review.body});
+        const $tdRating = $('<td>', {text: review.rating});
+        const $tdCreatedAt = $('<td>', {text: moment.utc(user.createdAt).local().format('ddd MMM D, YYYY h:mm a')});
+        let $tdTitle;
+  
+        if (authUser.username === user.username && review.HauntedPlace) {
+          $tdTitle = $('<td>', {
+            html: `
+              <button type="button" class="review-modal-btn btn btn-link p-0" data-toggle="modal" data-target="#editDelReviewModal" data-Rid="${review.id}" data-Rtitle="${review.title}" data-Rbody="${review.body}" data-Rrating="${review.rating}" data-HPname="${review.HauntedPlace.name}" data-HPid="${review.HauntedPlaceId}">
+              ${review.title}
+              </button>
+            `
+          });
+        } else {
+          $tdTitle = $('<td>', {text: review.title})
+        };
+      
+        $('#collapseTwo tbody').append($('<tr>').append($tdHP, $tdTitle, $tdBody, $tdRating, $tdCreatedAt));
+      };
     };
   }
 
