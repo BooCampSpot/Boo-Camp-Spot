@@ -22,10 +22,14 @@ router.get('/:username', (req, res) => {
     }],
     attributes: { exclude: ['password']}
   }).then(result => {
-    res.json([
-      result, 
-      {gravatarUrl: gravatar.url(result.email, {protocol: 'https'})}
-    ]);
+    if(result) {
+      res.json([
+        result, 
+        {gravatarUrl: gravatar.url(result.email, {protocol: 'https'})}
+      ]);
+    } else {
+      res.json(result);
+    };
   });
 });
 

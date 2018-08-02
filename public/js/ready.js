@@ -38,10 +38,15 @@ const App = (() => {
           redirect('/login');
         } else {
           const username = relPath.slice(3).replace(/ /g, ' ');
-          API.getUserData(username).then(result => { 
-            Listeners.reviewModal();
-            // result is array: [0] -> user data, [1] gravatarUrl
-            Render.initUserPage(result[0], result[1].gravatarUrl, user);
+          API.getUserData(username).then(result => {
+            console.log(result);
+            if(result) {
+              Listeners.reviewModal();
+              // result is array: [0] -> user data, [1] gravatarUrl
+              Render.initUserPage(result[0], result[1].gravatarUrl, user);
+            } else {
+              redirect('/');
+            };
           });
         }
       };
