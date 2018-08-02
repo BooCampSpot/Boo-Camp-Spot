@@ -128,11 +128,22 @@ const API = (() => {
     });
   }
 
+  const deleteReview = (HPid, Rid) => {
+    return $.ajax({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}/reviews/${Rid}`,
+      type: 'DELETE'
+    });
+  }
+
   return {
     getUserData,
     getTypes,
     createHauntedPlace,
-    updateReview
+    updateReview,
+    deleteReview
   }
 })();
 
@@ -315,7 +326,24 @@ const Listeners = (() => {
     });
 
     $('#delete-review-btn').click(function() {
-      console.log($(this).attr('data-Rid'))
+      const HPid = $(this).attr('data-HPid');
+      const Rid = $(this).attr('data-Rid');
+
+      API.deleteReview(HPid, Rid).then(result => {
+        console.log(result);
+        if (result === 1) {
+          const msg = 'Review successfully deleted!';
+          // remove review from table
+          $(`.review-modal-btn[data-Rid="${Rid}"]`).parent().parent().remove();
+          //
+          Render.showFormOverlayMsg('#edit-review-form', msg);
+          setTimeout(() => {
+            $('#editDelReviewModal').modal('toggle');
+          }, 2000);
+        } else {  // other error (unexpected)
+          Render.showFormOverlayMsg('#edit-review-form', 'Unauthorized request.');
+        };
+      }); 
     });
   }
 
