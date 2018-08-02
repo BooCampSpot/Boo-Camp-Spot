@@ -1,0 +1,33 @@
+body {
+  background-color: #e9ecef;
+  margin-bottom: 3.5rem; /* for sticky footer */
+}
+
+html { /* for sticky footer */
+  position: relative;
+  min-height: 100%;
+}
+
+/* Navbar CSS */
+.custom-nav-link,
+.btn-link-custom {
+  color: rgba(255,255,255,.5);
+}
+.custom-nav-link:hover,
+.btn-link-custom:hover {
+  color: rgba(255,255,255,.8);
+}
+#navbar-user,
+#navbar-signout {
+  display: none;
+}
+
+/* Footer CSS */
+.sticky-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  background-color: #c0d6e4; 
+}
