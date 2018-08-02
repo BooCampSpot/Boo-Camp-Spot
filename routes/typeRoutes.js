@@ -21,6 +21,7 @@ router.get('/:id/HauntedPlaces', (req, res) => {
     }]
   }).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM type WHERE hauntedID = ?');
   });
 });
 

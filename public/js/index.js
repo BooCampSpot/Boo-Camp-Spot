@@ -11,13 +11,10 @@ var $fourStar = $("#fourStar");
 var $fiveStar = $("#fiveStar");
 var $reviewSubmit = $("#reviewSubmit");
 var reviewStar = 0;
-var reviewLocationType = $("#reviewLocationType")
-
-
+var reviewLocationType = $("#reviewLocationType");;
 
 // Toggle review stars and store review value
 $oneStar.on("click", function() {
-
   $twoStar.removeClass("starClicked");
   $threeStar.removeClass("starClicked");
   $fourStar.removeClass("starClicked");
@@ -34,13 +31,11 @@ $oneStar.on("click", function() {
   } else {
     $(this).removeClass("starClicked");
     $(this).attr("data-selected", "false");
-  };
+  }
   return reviewStar;
 });
 
-
 $twoStar.on("click", function() {
-
   $threeStar.removeClass("starClicked");
   $fourStar.removeClass("starClicked");
   $fiveStar.removeClass("starClicked");
@@ -64,7 +59,6 @@ $twoStar.on("click", function() {
 });
 
 $threeStar.on("click", function() {
-
   $fourStar.removeClass("starClicked");
   $fiveStar.removeClass("starClicked");
   $fourStar.attr("data-selected", "false");
@@ -133,17 +127,14 @@ $fiveStar.on("click", function() {
     $threeStar.attr("data-selected", "false");
     $fourStar.attr("data-selected", "false");
   }
-  
 });
 
-
-$reviewSubmit.on("click", function (){
+$reviewSubmit.on("click", function() {
   event.preventDefault();
   var review = {
     reviewLocation: $("#reviewLocation").val(),
     reviewLocationType: $("#reviewLocationType").val(),
     reviewStar: reviewStar,
-    reviewText: $("#reviewText").val(),
+    reviewText: $("#reviewText").val()
   };
 });
-

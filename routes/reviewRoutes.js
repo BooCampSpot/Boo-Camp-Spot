@@ -18,6 +18,7 @@ router.get('/', (req, res) => {
     }
   }).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM Review');
   });
 });
 
@@ -30,6 +31,7 @@ router.get('/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM Review WHERE hauntedID=?');
   });
 });
 
@@ -43,6 +45,7 @@ router.post('/', passport.authenticate('auth-user', {session: false}), (req, res
     HauntedPlaceId: req.params.haunted_place_id
   }).then(result => {
     res.json(result);
+    connection.query('INSERT INTO Review VALUES ?');
   }).catch(err => {
     if (err['errors']) { // validation error
       res.json({error: err['errors']});
@@ -67,6 +70,7 @@ router.put('/:id', passport.authenticate('auth-user-has-review', {session: false
     }
   }).then(result => {
     res.json(result); // 1 (successful)
+    connection.query('UPDATE Review SET ?');
   }).catch(err => {
     if (err['errors']) { // validation error
       res.json({error: err['errors']});
@@ -84,6 +88,7 @@ router.delete('/:id', passport.authenticate('auth-user-has-review', {session: fa
     }
   }).then(result => {
     res.json(result); // 1 (successful), 0 (unsuccessful)
+    connection.query('DELETE FROM Review WHERE ?');
   });
 });
 

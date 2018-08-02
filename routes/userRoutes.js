@@ -20,6 +20,7 @@ router.get('/:id', (req, res) => {
     }]
   }).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM user WHERE placeID = ?, reviewID = ?');
   });
 });
 

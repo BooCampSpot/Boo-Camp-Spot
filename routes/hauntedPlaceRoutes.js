@@ -9,6 +9,7 @@ require('../config/passport');
 router.get('/', (req, res) => {
   HauntedPlace.findAll({}).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM hauntedPlaces');
   });
 });
 
@@ -24,6 +25,7 @@ router.get('/:id', (req, res) => {
     }]
   }).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM Reviews where hauntedID = ?');
   });
 });
 
@@ -38,6 +40,7 @@ router.post('/', passport.authenticate('auth-user', {session: false}), (req, res
     TypeId: req.body.TypeId
   }).then(result => {
     res.json(result);
+    connection.query('INSERT INTO hauntedPlaces VALUES ?')
   }).catch(err => {
     if (err['errors']) { // validation error
       res.json({error: err['errors']});
@@ -62,6 +65,7 @@ router.put('/:id', passport.authenticate('auth-user-has-place', {session: false}
     }
   }).then(result => {
     res.json(result); // 1 (successful)
+    connection.query('UPDATE hauntedPlace SET ?');
   }).catch(err => {
     if (err['errors']) { // validation error
       res.json({error: err['errors']});
@@ -79,6 +83,7 @@ router.delete('/:id', passport.authenticate('auth-user-has-place', {session: fal
     }
   }).then(result => {
     res.json(result); // 1 (successful), 0 (unsuccessful)
+    connection.query('DELETE FROM hauntedPlace WHERE ?')
   });
 });
 

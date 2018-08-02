@@ -10,9 +10,9 @@ const Review = require('../models').Review;
 router.get('/users', (req, res) => {
   User.findAll({}).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM user');
   });
 });
-
 
 // update User
 router.put('/users/:id', (req, res) => {
@@ -25,6 +25,7 @@ router.put('/users/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result); // 1 (successful)
+    connection.query('UPDATE user SET ?');
   }).catch(err => {
     res.json(err);
   });;
@@ -38,6 +39,7 @@ router.delete('/users/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result); // 1 (successful), 0 (unsuccessful)
+    connection.query('DELETE FROM user WHERE ?');
   });
 });
 
@@ -46,6 +48,7 @@ router.delete('/users/:id', (req, res) => {
 router.get('/types', (req, res) => {
   Type.findAll({}).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM types');
   });
 });
 
@@ -55,6 +58,7 @@ router.post('/types', (req, res) => {
     name: req.body.name,
   }).then(result => {
     res.json(result);
+    connection.query('INSERT INTO types VALUES ?');
   }).catch(err => {
     res.json(err);
   });
@@ -71,6 +75,7 @@ router.put('/types/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result); // 1 (successful)
+    connection.query('UPDATE type SET ?');
   }).catch(err => {
     res.json(err);
   });;
@@ -84,6 +89,7 @@ router.delete('/types/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result); // 1 (successful), 0 (unsuccessful)
+    connection.query('DELETE FROM type WHERE ?');
   });
 });
 
@@ -92,6 +98,7 @@ router.delete('/types/:id', (req, res) => {
 router.get('/hauntedplaces', (req, res) => {
   HauntedPlace.findAll({}).then(result => {
     res.json(result);
+    connection.query('SELECT * FROM hauntedPlaces');
   });
 });
 
@@ -103,6 +110,7 @@ router.delete('/hauntedplaces/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result); // 1 (successful), 0 (unsuccessful)
+    connection.query('DELETE FROM type WHERE ?');
   });
 });
 
@@ -111,6 +119,7 @@ router.delete('/hauntedplaces/:id', (req, res) => {
 router.get('/reviews', (req, res) => {
   Review.findAll({}).then(result => {
     res.json(result);
+    connection.query("SELECT * FROM reviews");
   });
 });
 
@@ -122,6 +131,7 @@ router.delete('/reviews/:id', (req, res) => {
     }
   }).then(result => {
     res.json(result); // 1 (successful), 0 (unsuccessful)
+    connection.query('DELETE FROM type WHERE ?');
   });
 });
 
