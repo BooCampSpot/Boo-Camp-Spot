@@ -341,7 +341,7 @@ const Render = (() => {
     $('#user-photo').attr('src', gravatarUrl);
     $('#user-username').text(user.username);
     $('#user-email').text(user.email);
-    $('#user-createdAt').text(moment.utc(user.createdAt).local().format('ddd MMM D, YYYY h:mm a'));
+    $('#user-createdAt').text(moment.utc(user.createdAt).local().format('MMM D, YYYY'));
 
     for (const place of hauntedPlaces) {
       // const $tdType = $('<td>', {text: place.TypeId});
@@ -357,8 +357,9 @@ const Render = (() => {
       const $tdTitle = $('<td>', {text: review.title});
       const $tdBody = $('<td>', {text: review.body});
       const $tdRating = $('<td>', {text: review.rating});
+      const $tdCreatedAt = $('<td>', {text: moment.utc(user.createdAt).local().format('ddd MMM D, YYYY h:mm a')});
     
-      $('#collapseTwo tbody').append($('<tr>').append($tdTitle, $tdBody, $tdRating));
+      $('#collapseTwo tbody').append($('<tr>').append($tdTitle, $tdBody, $tdRating, $tdCreatedAt));
     };
 
     if (!hauntedPlaces.length) {
