@@ -33,7 +33,15 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false
     }
-  });
+  }, {
+    indexes: [
+      {
+        fields: ['username']
+      },
+      {
+        fields: ['email']
+      }
+  ]});
 
   // beforeCreate hook
   User.beforeCreate((user, options) => {

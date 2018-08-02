@@ -36,21 +36,7 @@ module.exports = function(app) {
   });
 
   app.get('/u/:username', (req, res) => {
-    User.findOne({
-      where: {
-        username: req.params.username.replace(/_/g, ' ')
-      },
-      include: [{
-        model: HauntedPlace, 
-        //required: true
-      },
-      {
-        model: Review,
-        //required: true
-      }]
-    }).then(result => {
-      res.json(result);
-    });
+    res.render('user', {layout: 'form'});
   });
 
   app.get('/explore/new', (req, res) => {

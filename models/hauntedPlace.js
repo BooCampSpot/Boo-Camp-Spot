@@ -31,7 +31,12 @@ module.exports = function(sequelize, DataTypes) {
         }
       }
     }
-  });
+  }, {
+    indexes: [
+      {
+        fields: ['name']
+      }
+  ]});
 
   HauntedPlace.associate = (models) => {
     HauntedPlace.belongsTo(models.User, {

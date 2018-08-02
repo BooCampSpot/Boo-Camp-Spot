@@ -24,7 +24,7 @@ const adminRoutes = require('./routes/adminRoutes');
 //===== Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 //===== Handlebars
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));

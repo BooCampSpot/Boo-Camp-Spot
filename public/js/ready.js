@@ -32,6 +32,18 @@ const App = (() => {
           redirect(`/u/${user.username}`);
         };
       };
+
+      if(relPath.includes('/u/')) {
+        if (!user) {
+          redirect('/login');
+        } else {
+          const username = relPath.slice(3).replace(/ /g, ' ');
+          API.getUserData(username).then(result => { 
+            // result is array: [0] -> user data, [1] gravatarUrl
+            Render.initUserPage(result[0], result[1].gravatarUrl);
+          });
+        }
+      };
     });
   }
 
@@ -82,6 +94,12 @@ const Auth = (() => {
 })();
 
 const API = (() => {
+  const getUserData = (username) => {
+    return $.get({
+      url: `/api/v1/users/${username}`
+    });
+  } 
+
   const getTypes = () => {
     return $.get({
       url: '/api/v1/types'
@@ -99,6 +117,7 @@ const API = (() => {
   }
 
   return {
+    getUserData,
     getTypes,
     createHauntedPlace
   }
@@ -315,6 +334,44 @@ const Render = (() => {
     };
   };
 
+  const initUserPage = (user, gravatarUrl) => {
+    const hauntedPlaces = user.HauntedPlaces;
+    const reviews = user.Reviews;
+
+    $('#user-photo').attr('src', gravatarUrl);
+    $('#user-username').text(user.username);
+    $('#user-email').text(user.email);
+    $('#user-createdAt').text(moment.utc(user.createdAt).local().format('ddd MMM D, YYYY h:mm a'));
+
+    for (const place of hauntedPlaces) {
+      // const $tdType = $('<td>', {text: place.TypeId});
+      const $tdName = $('<td>', {text: place.name});
+      const $tdDesc = $('<td>', {text: place.description});
+      const $tdLoc = $('<td>', {text: place.location});
+    
+      $('#collapseOne tbody').append($('<tr>').append($tdName, $tdDesc, $tdLoc));
+    };
+
+    for (const review of reviews) {
+      // const $tdHP = $('<td>', {text: review.HauntedPlaceId});
+      const $tdTitle = $('<td>', {text: review.title});
+      const $tdBody = $('<td>', {text: review.body});
+      const $tdRating = $('<td>', {text: review.rating});
+    
+      $('#collapseTwo tbody').append($('<tr>').append($tdTitle, $tdBody, $tdRating));
+    };
+
+    if (!hauntedPlaces.length) {
+      $('#collapseOne table').css('display', 'none');
+      $('#collapseOne .alert').css('display', 'block');
+    };
+
+    if(!reviews.length) {
+      $('#collapseTwo table').css('display', 'none');
+      $('#collapseTwo .alert').css('display', 'block');
+    };
+  }
+
   const populateTypeSelect = (selector, types) => {
     const $select = $(selector);
 
@@ -354,6 +411,7 @@ const Render = (() => {
 
   return {
     initNavbar,
+    initUserPage,
     populateTypeSelect,
     showInputErrMsg,
     showFormOverlayMsg,
