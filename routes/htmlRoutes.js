@@ -5,7 +5,15 @@ module.exports = function(app) {
     res.render("index");
   });
 
-  app.get('/explore/new', function(req, res) {
+  app.get('/signup', (req, res) => {
+    res.render('signup', {layout: 'form'});
+  });
+
+  app.get('/login', (req, res) => {
+    res.render('login', {layout: 'form'});
+  });
+
+  app.get('/explore/new', (req, res) => {
     res.render('newHauntedPlace', {layout: 'form'});
   });
 };

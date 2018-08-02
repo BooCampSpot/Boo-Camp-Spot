@@ -6,7 +6,11 @@ const App = (() => {
 
       if(relPath === '/explore/new') {
         if(!user) {
-          redirect('/login');
+          const msg = 'You must be signed in to add a new Haunted Place!'
+          Render.showFormOverlayMsg('#add-haunted-place-form', msg);
+          setTimeout(() => {
+            redirect('/login');
+          }, 3200);
         } else {
           Listeners.submitAddHauntedPlace();
           Render.populateTypeSelect('#add-hp-type', types);
