@@ -2,22 +2,24 @@
   "development": {
     "username": "root",
     "password": "root",
-    "database": "haunted_adventures_db",
-
-    "host": "localhost",
+    "database": "haunted_places_db",
+    "host": "127.0.0.1",
     "dialect": "mysql",
-    "port": "8889"
+    "port": 8889
+
   },
   "test": {
     "username": "root",
     "password": null,
-    "database": "haunted_adventures_testdb",
-    "host": "localhost",
-    "dialect": "mysql",
-    "logging": false
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "JAWSDB_URL",
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   }
 }
