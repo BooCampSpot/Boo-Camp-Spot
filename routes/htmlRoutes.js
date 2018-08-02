@@ -20,19 +20,16 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/explore/hauntedplace/id/review', (req, res) => {
-    Type.findAll({}).then(result => {
-      console.log(result)
-      res.render("review", {types: result})
-    });
+  app.get('/p/:hauntedplace/review', (req, res) => {
+    res.render("review")
   });
 
   app.get('/signup', (req, res) => {
-    res.render('signup', {layout: 'form'});
+    res.render('signup');
   });
 
   app.get('/login', (req, res) => {
-    res.render('login', {layout: 'form'});
+    res.render('login');
   });
 
   app.get('/u/:username', (req, res) => {
@@ -54,6 +51,6 @@ module.exports = function(app) {
   });
 
   app.get('/explore/new', (req, res) => {
-    res.render('newHauntedPlace', {layout: 'form'});
+    res.render('newHauntedPlace');
   });
 };

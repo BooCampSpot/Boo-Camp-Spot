@@ -7,27 +7,24 @@
   margin-top: 0px;  
 }
 
-
-
-#sighting-button{
-  background-color: lightblue;
-  width: 220px;
+.homeBtn {
+  background-image: url("../images/ep_naturalblack.png");
+  color: lightgray;
+  box-shadow: 0px 0px 20px 2px lightcoral;
 }
 
-#placeIcon {
-  background-color: lavender;
-  width: 220px;
+.homeBtn:hover {
+  color: lightcoral;
 }
 
 
-.fa-star:hover{
+.reviewStar:hover{
   color: gold;
 }
 
 .starClicked {
   color: gold;
 }
-
 
 #placeCard {
   background-image: url("../images/stardust.png");
@@ -45,10 +42,9 @@
 
 #placeDescription {
   border-radius: 5px;
-  margin-top: 5px;
+  margin-top: 10px;
   background-color:white;
   color: black;
-  box-shadow: 0px 0px 20px 5px lightcoral;
 }
 
 .ratingStar {
@@ -65,14 +61,9 @@
 }
 
 #reviewForm {
-  text-align: center; 
   color: darkgray;
 }
 
-#reviewSubmit {
-  width: 25%;
-  font-size: 25px;
-}
 
 .jumbotron {
   text-align: center;
@@ -80,12 +71,17 @@
 
 #landingPageContainer {
   background-image: url("../images/stardust.png");
+  opacity: 0.9;
   width: 100%;
   margin: 0 auto;
   text-align: center;
   margin-top: 12.5%;
   color: white;
   border-radius: 10px;
+}
+
+.landingContent {
+  position: relative;
 }
 
 #enterHome {
