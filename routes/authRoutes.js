@@ -15,9 +15,9 @@ router.post('/signup', (req, res) => {
     const userSameEmail = await User.findOne({where: {email: req.body.email}});
 
     if (userSameUsername) {
-      return res.json({error: 'same username'});
+      return res.json({error: 'Username already taken!'});
     } else if (userSameEmail) {
-      return res.json({error: 'same email'});
+      return res.json({error: 'User with this email already exists!'});
     } else {
       try {
         const newUser = await User.create({

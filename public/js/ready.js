@@ -16,6 +16,14 @@ const App = (() => {
           Render.populateTypeSelect('#add-hp-type', types);
         };
       };
+
+      if(relPath === '/signup') {
+        if(!user) {
+          Listeners.submitSignUp();
+        } else {
+          redirect(`/u/${user.username}`);
+        };
+      };
     });
   }
 
@@ -42,10 +50,18 @@ const Auth = (() => {
     localStorage.removeItem('accessToken');
   }
 
+  const createUser = (newUser) => {
+    return $.post({
+      url: '/auth/signup',
+      data: newUser
+    });
+  }
+
   return {
     setAccessToken,
     getAccessToken,
-    destroyAccessToken
+    destroyAccessToken,
+    createUser
   }
 })();
 
@@ -78,6 +94,48 @@ const Listeners = (() => {
       e.preventDefault();
       Auth.destroyAccessToken();
       App.redirect('/');
+    });
+  }
+
+  const submitSignUp = () => {
+    $('#signup-form').submit((e) => {
+      e.preventDefault();
+
+      const newUser = {
+        username: $('#signup-username').val(),
+        email: $('#signup-email').val(),
+        password: $('#signup-password').val(),
+        passwordConfirm: $('#signup-password-confirm').val()
+      };
+      const validationResult = Validate.newUser(newUser);
+
+      if (validationResult.isValid) {
+        Auth.createUser(newUser).then(result => {
+          if (result.error === 'Username already taken!') {
+            Render.showInputErrMsg('#signup-username', result.error);
+          } else if (result.error === 'User with this email already exists!') {
+            Render.showInputErrMsg('#signup-email', result.error);
+          } else if (result.error) { // other error (unexpected)
+            Render.showFormOverlayMsg('#signup-form', 'Unauthorized request.');
+          } else {
+            const msg = `You have successfully signed up!`
+            Render.showFormOverlayMsg('#signup-form', msg);
+            setTimeout(() => {
+              App.redirect(`/u/${newUser.username.replace(/ /g, '_')}`);
+            }, 3200);
+          }; 
+        });
+      } else {
+        const usernameErr = validationResult.errors.username;
+        const emailErr = validationResult.errors.email;
+        const pwErr = validationResult.errors.password;
+        const pwConfirmErr = validationResult.errors.passwordConfirm;
+  
+        if (usernameErr) Render.showInputErrMsg('#signup-username', usernameErr);
+        if (emailErr) Render.showInputErrMsg('#signup-email', emailErr);
+        if (pwErr) Render.showInputErrMsg('#signup-password', pwErr);
+        if (pwConfirmErr) Render.showInputErrMsg('#signup-password-confirm', pwConfirmErr);
+      };
     });
   }
 
@@ -121,6 +179,7 @@ const Listeners = (() => {
 
   return {
     signout,
+    submitSignUp,
     submitAddHauntedPlace
   }
 })();
@@ -134,6 +193,33 @@ const Validate = (() => {
     } else {
       return '';
     };
+  }
+
+  const emailErrMsg = (email) => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    
+    if (email.length < 3 || email.length > 100) return 'Invalid Email.';
+    if (emailRegex.test(email.toLowerCase())) {
+      return '';
+    } else {
+      return 'Invalid Email.'
+    };
+  }
+
+  const newUser = (newUser) => {
+    const result = {
+      isValid: true,
+      errors: {
+        username: lengthErrMsg(newUser.username, 2, 50),
+        email: emailErrMsg(newUser.email),
+        password: lengthErrMsg(newUser.password, 8, 50),
+        passwordConfirm: newUser.password === newUser.passwordConfirm ? '' : 'Passwords do not match!'
+      }
+    };
+    if (result.errors.username || result.errors.email || result.errors.password || result.errors.passwordConfirm) {
+      result.isValid = false;
+    };
+    return result;
   }
 
   const newPlace = (newPlace) => {
@@ -152,6 +238,7 @@ const Validate = (() => {
   }
 
   return {
+    newUser,
     newPlace
   }
 })();
