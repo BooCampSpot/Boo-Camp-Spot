@@ -212,7 +212,7 @@ const Listeners = (() => {
             const msg = `${result.name} has been successfully added!`
             Render.showFormOverlayMsg('#add-haunted-place-form', msg);
             setTimeout(() => {
-              App.redirect('/');
+              App.redirect(`/p/${result.name.replace(/ /g, '_')}`);
             }, 2000);
           }; 
         });
@@ -308,6 +308,7 @@ const Render = (() => {
     if (user) {
       $('#navbar-signup').css('display', 'none');
       $('#navbar-login').css('display', 'none');
+      $('#navbar-user a').attr('href', `/u/${user.username}`)
       $('#navbar-user a').html(`<i class="fas fa-user pr-2"></i> ${user.username}`);
       $('#navbar-user').css('display', 'block');
       $('#navbar-signout').css('display', 'block');
