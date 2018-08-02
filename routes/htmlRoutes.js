@@ -20,11 +20,8 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/explore/hauntedplace/id/review', (req, res) => {
-    Type.findAll({}).then(result => {
-      console.log(result)
-      res.render("review", {types: result})
-    });
+  app.get('/p/:hauntedplace/review', (req, res) => {
+    res.render("review")
   });
 
   app.get('/signup', (req, res) => {

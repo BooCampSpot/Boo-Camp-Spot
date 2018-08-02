@@ -2,29 +2,19 @@
   <div class="row">
     <div class="col-md-6" id="reviewFormContainer">
   <form id="reviewForm">
-    <div class="form-group"><h1>Submit Your Review</h1></div>
+    <div class="form-group"><h1 class="text-center">Submit Your Review</h1></div>
   <div class="form-group">
-    <label for="locationNameForm" id="locationNameReview"><h4>Location name</h4></label>
+    <label for="locationNameForm" id="locationNameReview"><h4>Review Title</h4></label>
     <input type="text" class="form-control" id="reviewLocation" value="">
   </div>
   <div class="form-group">
-    <h4>
-    Location type
-    </h4>
-    <select class="form-control" id="reviewLocationType">
-      {{#each types}}
-        <option>{{name}}</option>
-      {{/each}}
-    </select>
-    </div>
-  <div class="form-group">
     <label for="reviewSelect"><h4>Rating</h4></label>
       <div class="star-rating"> 
-        <btn class="fa fa-star" data-rating="1" data-selected="false" id="oneStar"></btn>
-        <btn class="fa fa-star" data-rating="2" data-selected="false" id="twoStar"></btn>
-        <btn class="fa fa-star" data-rating="3" data-selected="false" id="threeStar"></btn>
-        <btn class="fa fa-star" data-rating="4" data-selected="false" id="fourStar"></btn>
-        <btn class="fa fa-star" data-rating="5" data-selected="false" id="fiveStar"></btn>
+        <btn class="fa fa-star reviewStar" data-rating="1" data-selected="false" id="oneStar"></btn>
+        <btn class="fa fa-star reviewStar" data-rating="2" data-selected="false" id="twoStar"></btn>
+        <btn class="fa fa-star reviewStar" data-rating="3" data-selected="false" id="threeStar"></btn>
+        <btn class="fa fa-star reviewStar" data-rating="4" data-selected="false" id="fourStar"></btn>
+        <btn class="fa fa-star reviewStar" data-rating="5" data-selected="false" id="fiveStar"></btn>
       </div>
     </select>
   </div>
@@ -32,7 +22,9 @@
     <label for="reviewText"><h4>Please enter your review</h4></label>
     <textarea class="form-control" id="reviewText" rows="3"></textarea>
   </div>
-    <button type="submit" class="btn btn-primary" id="reviewSubmit">Submit</button>
+   <div class="d-flex">
+     <button type="submit" class="btn btn-primary w-50 mt-2 mx-auto">Submit</button>
+        </div>
 </form>
 </div>
 </div>

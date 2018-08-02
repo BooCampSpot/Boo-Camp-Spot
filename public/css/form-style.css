@@ -1,8 +1,9 @@
 #add-haunted-place-form,
 #login-form,
 #signup-form {
-  background-color: #f5f5dc;
+  background-image: url("../images/darkness.png");
   border: 1px solid #ffa500;
+  color: darkgray;
 }
 
 .overlay-container {
