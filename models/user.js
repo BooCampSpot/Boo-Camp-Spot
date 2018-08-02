@@ -35,7 +35,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   });
 
-  //beforeCreate hook
+  // beforeCreate hook
   User.beforeCreate((user, options) => {
     return user.password = bcrypt.hashSync(user.password, 8);
   });
@@ -50,5 +50,6 @@ module.exports = function(sequelize, DataTypes) {
     User.hasMany(models.HauntedPlace);
     User.hasMany(models.Review);
   };
+
   return User;
 };

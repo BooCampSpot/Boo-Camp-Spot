@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   HauntedPlace.findOne({
     where: {
-        id: req.params.id
+      id: req.params.id
     },
     include: [{
       model: Review, 
@@ -30,19 +30,29 @@ router.get('/:id', (req, res) => {
 // create Haunted Place; auth user required
 // note req.user comes from passport.authenticate(...)
 router.post('/', passport.authenticate('auth-user', {session: false}), (req, res) => {
-  HauntedPlace.create({
-    name: req.body.name,
-    description: req.body.description,
-    location: req.body.location,
-    UserId: req.user.id,
-    TypeId: req.body.TypeId
+  HauntedPlace.findOne({
+    where: {
+      name: req.body.name
+    }
   }).then(result => {
-    res.json(result);
-  }).catch(err => {
-    if (err['errors']) { // validation error
-      res.json({error: err['errors']});
-    } else { // SQL error
-      res.json({error: 'Invalid request.'});
+    if(result) {
+      res.json({error: 'Must be unique (name already exists)!'})
+    } else {
+      HauntedPlace.create({
+        name: req.body.name,
+        description: req.body.description,
+        location: req.body.location,
+        UserId: req.user.id,
+        TypeId: req.body.TypeId
+      }).then(result => {
+        res.json(result);
+      }).catch(err => {
+        if (err['errors']) { // validation error
+          res.json({error: err['errors']});
+        } else { // SQL error
+          res.json({error: 'Invalid request.'});
+        };
+      });
     };
   });
 });

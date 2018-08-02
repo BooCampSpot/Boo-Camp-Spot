@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('../config/jwt');
 const User = require('../models').User;
+const passport = require('passport');
+require('../config/passport');
+
+router.get('/user', passport.authenticate('auth-user', {session: false}), (req, res) => {
+  res.json(req.user);
+});
 
 router.post('/signup', (req, res) => {
   (async() =>  {
@@ -9,9 +15,9 @@ router.post('/signup', (req, res) => {
     const userSameEmail = await User.findOne({where: {email: req.body.email}});
 
     if (userSameUsername) {
-      return res.json({error: 'same username'});
+      return res.json({error: 'Username already taken!'});
     } else if (userSameEmail) {
-      return res.json({error: 'same email'});
+      return res.json({error: 'User with this email already exists!'});
     } else {
       try {
         const newUser = await User.create({
@@ -37,7 +43,10 @@ router.post('/login', (req, res) => {
     if (!user) user = await User.findOne({where: {email: usernameOrEmail}});
 
     if (user && user.validPassword(password)) {
-      return res.json({accessToken: jwt.createToken(user)});
+      return res.json({
+        accessToken: jwt.createToken(user),
+        username: user.username
+      });
     } else if (user && !user.validPassword(password)) {
       return res.json({error: 'Invalid Password!'});
     } else {
