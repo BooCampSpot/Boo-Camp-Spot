@@ -1,6 +1,13 @@
 const App = (() => {
   const init = (relPath, user) => {
     Listeners.signout();
+
+    if(user) {
+      $('#HP-add-review-btn').attr('href', `/u/${user.username.replace(/ /g, '_')}/quickreview`);
+    } else {
+      $('#HP-add-review-btn').attr('href', '/login');
+    };
+
     API.getTypes().then(types => {
       Render.initNavbar(types, user);
 

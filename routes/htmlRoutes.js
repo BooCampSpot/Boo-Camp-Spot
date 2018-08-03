@@ -3,6 +3,7 @@ const User = db.User;
 const HauntedPlace = db.HauntedPlace;
 const Review = db.Review;
 const Type = db.Type;
+const placesController = require('../controllers/placesController');
 
 module.exports = function(app) {
 
@@ -43,6 +44,10 @@ module.exports = function(app) {
     });
   });
 
+  app.get('/explore/new', (req, res) => {
+    res.render('newHauntedPlace');
+  });
+
   app.get('/explore/:type', (req, res) => {
     Type.findOne({
       where: {
@@ -74,10 +79,6 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/explore/new', (req, res) => {
-    res.render('newHauntedPlace');
-  });
-
   app.get('/u/:username', (req, res) => {
     res.render('user');
   });
@@ -90,10 +91,16 @@ module.exports = function(app) {
     HauntedPlace.findOne({
       where: {
         name: req.params.haunted_place.replace(/_/g, ' ')
-      }
+      },
+      include: [{
+        model: Review,
+        include: [User]
+      }]
     }).then(place => {
       if (place) {
-        res.render('hauntedPlace');
+        placesController.getImageLink(place.name).then(link => {
+          res.render('hauntedPlace', {place: place, link: link});
+        });
       } else {
         res.redirect('/home');
       };

@@ -1,1 +1,42 @@
-<h1>/p/:hauntedplace</h1>
+<div class="container">
+  <div class="card mb-3" id="placeCard">
+    <div class="position-relative">
+      <img class="card-img-top p-img" src="{{link}}" alt="Card image cap" id="placeImage">
+      <div id="placeType"><span class="badge badge-custom">{{place.Type.name}}</span></div>
+    </div>
+    <div class="card-body">
+      <h2 class="card-title placeTitle lead py-2 mb-3">{{place.name}}</h2>
+      <p class="card-text placeDescription"><i class="fas fa-book"></i> {{place.description}}</p>
+      <p class="card-text placeLocation"><i class="fas fa-map-marker-alt"></i> {{place.location}}</p>
+    </div>
+  </div>
+
+  <div class="reviews-container px-3 py-2">
+    <h1>Reviews</h1>
+    <hr>
+    {{#if place.Reviews }}
+      {{#each place.Reviews}}
+        <div class="media review-item px-3 p-2 mb-3">
+          <div class="media-body">
+            <h5 class="mt-0">
+              {{title}} 
+              <span class="ml-3 lead">
+                {{rating}}
+                <i class="fa fa-star"></i>
+              </span>
+            </h5>
+            <p class="mb-2"><em>{{User.username}}</em></p>
+            {{body}}
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      <div class="alert alert-info" role="alert">
+        😮 There are no reviews for this haunted place yet!
+      </div>
+    {{/if}}
+    <div class="d-flex mb-3">
+      <a id="HP-add-review-btn" class="btn btn-primary ml-auto" href="" role="button">Add Your Review</a>
+    </div>
+  </div>
+</div>

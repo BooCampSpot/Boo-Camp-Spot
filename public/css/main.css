@@ -34,7 +34,7 @@ html { /* for sticky footer */
   background-color: #ffffff70;
 }
 
-/* Places CSS */
+/* Place(s) CSS */
 #placeType {
   position: absolute;
   right: 0px;
@@ -44,6 +44,16 @@ html { /* for sticky footer */
   border-radius: 0;
   background-color: #e6e6fa50;
   color: white;
+}
+.p-img {
+  max-height: 420px;
+  object-fit: cover;
+}
+.reviews-container {
+  background-color: #ff7f5080;
+}
+.review-item {
+  background-color: #ffffff70;
 }
 
 /* Footer CSS */

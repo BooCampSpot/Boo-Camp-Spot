@@ -1,21 +1,27 @@
 {{!-- Need to reference source to input data --}}
 <div class="container">
   <div class="row"> 
-    {{#each places}}
-      <div class="col-md-4">
-        <div class="card mb-3" id="placeCard">
-          <div class="position-relative">
-            <img class="card-img-top" src="{{imgLink}}" alt="Card image cap" id="placeImage">
-            <div id="placeType"><span class="badge badge-custom">{{type}}</span></div>
-          </div>
-          <div class="card-body">
-            <a href="{{urlLink}}">
-              <h4 class="card-title text-truncate" id="placeTitle">{{name}}</h4>
-            </a>
-            <p class="card-text text-truncate" id="placeDescription"><i class="fas fa-map-marker-alt"></i> {{location}}</p>
+    {{#if places}}
+      {{#each places}}
+        <div class="col-md-4">
+          <div class="card mb-3" id="placeCard">
+            <div class="position-relative">
+              <img class="card-img-top" src="{{imgLink}}" alt="Card image cap" id="placeImage">
+              <div id="placeType"><span class="badge badge-custom">{{type}}</span></div>
+            </div>
+            <div class="card-body">
+              <a href="{{urlLink}}">
+                <h4 class="card-title placeTitle text-truncate">{{name}}</h4>
+              </a>
+              <p class="card-text text-truncate placeLocation"><i class="fas fa-map-marker-alt"></i> {{location}}</p>
+            </div>
           </div>
         </div>
+      {{/each}}
+    {{else}}
+      <div class="alert alert-info" role="alert">
+        😮 Where are the haunted places?!?
       </div>
-    {{/each}}
+    {{/if}}
   </div>
 </div>
