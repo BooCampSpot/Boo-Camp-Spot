@@ -23,8 +23,23 @@ module.exports = function(app) {
   });
 
   app.get("/explore", function(req, res) {
-    HauntedPlace.findAll({}).then(result => {
-      res.render("places", {places: result});
+    HauntedPlace.findAll({
+      include: [{
+        model: Type
+      }]
+    }).then(result => {
+      let places = [];
+
+      for(const place of result) {
+        places.push({
+          imgLink: `/images/HP-${Math.floor(Math.random()*12)+1}.jpg`,
+          urlLink: `/p/${place.name.replace(/ /g, '_')}`,
+          name: place.name,
+          location: place.location,
+          type: place.Type.name
+        });
+      };
+      res.render("places", {places: places});
     });
   });
 

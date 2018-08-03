@@ -26,5 +26,4 @@ router.get('/:id/HauntedPlaces', (req, res) => {
   });
 });
 
-
 module.exports = router;

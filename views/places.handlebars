@@ -3,15 +3,16 @@
   <div class="row"> 
     {{#each places}}
       <div class="col-md-4">
-        <div class="card" id="placeCard">
-          <img class="card-img-top p-2" src="./images/forest-light-fog-mist-night-house-948848-pxhere.com.jpg" alt="Card image cap" id="placeImage">
-          <div class="card-body">
-          <div class="fa fa-star ratingStar"></div>
-          <h4 class="card-title" id="placeTitle">{{name}}</h4>
-          <p class="card-text" id="placeDescription">{{description}}</p>
+        <div class="card mb-3" id="placeCard">
+          <div class="position-relative">
+            <img class="card-img-top" src="{{imgLink}}" alt="Card image cap" id="placeImage">
+            <div id="placeType"><span class="badge badge-custom">{{type}}</span></div>
           </div>
           <div class="card-body">
-            <a href="#" class="btn btn-primary">Reviews</a>
+            <a href="{{urlLink}}">
+              <h4 class="card-title text-truncate" id="placeTitle">{{name}}</h4>
+            </a>
+            <p class="card-text text-truncate" id="placeDescription"><i class="fas fa-map-marker-alt"></i> {{location}}</p>
           </div>
         </div>
       </div>

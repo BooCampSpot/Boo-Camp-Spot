@@ -34,6 +34,18 @@ html { /* for sticky footer */
   background-color: #ffffff70;
 }
 
+/* Places CSS */
+#placeType {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+.badge-custom {
+  border-radius: 0;
+  background-color: #e6e6fa50;
+  color: white;
+}
+
 /* Footer CSS */
 .sticky-footer {
   position: absolute;
