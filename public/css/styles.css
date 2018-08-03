@@ -98,7 +98,7 @@
   left: 0;
   right: 0;
   bottom: 0;
- }
+}
 
 #background_video {
   position: absolute;
@@ -131,11 +131,4 @@
   /* Vertical center */
   top: 50%;
   transform: translateY(-50%);
-}
-
-/* setting wallpaper */
-.mywallp {
-  background-image: url(../images/trentastone.jpg);
-  background-size: cover;
-  background-repeat:no-repeat;
 }
