@@ -28,6 +28,10 @@ module.exports = function(app) {
     });
   });
 
+  app.get('/explore/new', (req, res) => {
+    res.render('newHauntedPlace');
+  });
+
   app.get('/u/:username', (req, res) => {
     res.render('user');
   });
@@ -36,7 +40,7 @@ module.exports = function(app) {
     res.render('review');
   });
 
-  app.get('/explore/new', (req, res) => {
-    res.render('newHauntedPlace');
+  app.get('*', (req, res) => {
+    res.render('404');
   });
 };

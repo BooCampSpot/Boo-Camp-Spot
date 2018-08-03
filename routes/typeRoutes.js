@@ -14,10 +14,12 @@ router.get('/', (req, res) => {
 
 // get one Type, with its Haunted Places; no auth required
 router.get('/:id/HauntedPlaces', (req, res) => {
-  Type.findAll({
+  Type.findOne({
+    where: {
+      id: req.params.id
+    },
     include: [{
-      model: HauntedPlace, 
-      required: true
+      model: HauntedPlace
     }]
   }).then(result => {
     res.json(result);
