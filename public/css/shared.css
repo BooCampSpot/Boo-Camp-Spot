@@ -1,6 +1,9 @@
 body {
   background-color: #e9ecef;
   margin-bottom: 3.5rem; /* for sticky footer */
+  background-image: url(../images/trentastone.jpg);
+  background-size: cover;
+  background-repeat:no-repeat;
 }
 
 html { /* for sticky footer */
@@ -29,5 +32,6 @@ html { /* for sticky footer */
   width: 100%;
   height: 2.5rem;
   line-height: 2.5rem;
-  background-color: #c0d6e4; 
+  color: white;
+  background-color: #212929; 
 }
