@@ -39,9 +39,10 @@ const App = (() => {
         } else {
           const username = relPath.slice(3).replace(/ /g, ' ');
           API.getUserData(username).then(result => {
-            console.log(result);
             if(result) {
+              Listeners.hpModal();
               Listeners.reviewModal();
+              Render.populateTypeSelect('#edit-HP-type', types);
               // result is array: [0] -> user data, [1] gravatarUrl
               Render.initUserPage(result[0], result[1].gravatarUrl, user);
             } else {
@@ -122,6 +123,17 @@ const API = (() => {
     });
   }
 
+  const updateHauntedPlace = (HPid, updatedHP) => {
+    return $.ajax({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}`,
+      type: 'PUT',
+      data: updatedHP
+    });
+  }
+
   const updateReview = (HPid, Rid, updatedReview) => {
     return $.ajax({
       beforeSend: (request) => {
@@ -147,6 +159,7 @@ const API = (() => {
     getUserData,
     getTypes,
     createHauntedPlace,
+    updateHauntedPlace,
     updateReview,
     deleteReview
   }
@@ -276,6 +289,67 @@ const Listeners = (() => {
     });
   }
 
+  const hpModal = () => {
+    $(document).on('click', '.hp-modal-btn', function() {
+      $('#editHPLabel').html(`Edit <code>${$(this).attr('data-HPname')}</code>`);
+      $('#edit-HP-name').val($(this).attr('data-HPname'));
+      $('#edit-HP-description').val($(this).attr('data-HPdesc'));
+      $('#edit-HP-location').val($(this).attr('data-HPloc'));
+      $(`#edit-HP-type option[value="${$(this).attr('data-HPtypeId')}"]`).prop("selected", true);
+
+      $('#update-HP-btn').attr('data-HPid', $(this).attr('data-HPid'));
+    });
+
+    $('#update-HP-btn').click(function() {
+      const updatedHP = {
+        TypeId: parseInt($(`#edit-HP-type option:selected`).val()),  
+        name: $('#edit-HP-name').val(),
+        description: $('#edit-HP-description').val(),
+        location: $('#edit-HP-location').val() 
+      }
+      const validationResult = Validate.newPlace(updatedHP);
+
+      if(validationResult.isValid) {
+        const HPid = $(this).attr('data-HPid');
+
+        API.updateHauntedPlace(HPid, updatedHP).then(result => {
+          if (result[0] === 1) {
+            const msg = 'Haunted Place successfully updated!';
+            const newType = $(`#edit-HP-type option[value="${updatedHP.TypeId}"]`).text();
+            // update the haunted place in table (btn/link data and rows)
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).text(updatedHP.name);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPtypeId', updatedHP.TypeId);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPname', updatedHP.name);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPdesc', updatedHP.description);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPloc', updatedHP.location);
+
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).parent().parent().find('td:eq(0)').text(newType);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).parent().parent().find('td:eq(2)').text(updatedHP.description);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).parent().parent().find('td:eq(3)').text(updatedHP.location);
+            //
+            Render.showFormOverlayMsg('#edit-HP-form', msg);
+            setTimeout(() => {
+              $('#editHPModal').modal('toggle');
+            }, 2000);
+          } else if (result.error === 'Must be unique (name already exists)!') {
+            Render.showInputErrMsg('#edit-HP-name', result.error);
+          } else { // other error (unexpected)
+            Render.showFormOverlayMsg('#edit-HP-form', 'Unauthorized request.');
+          };
+        });
+
+      } else {
+        const nameErr = validationResult.errors.name;
+        const descErr = validationResult.errors.description;
+        const locErr = validationResult.errors.location;
+
+        if (nameErr) Render.showInputErrMsg('#edit-HP-name', nameErr);
+        if (descErr) Render.showInputErrMsg('#edit-HP-description', descErr);
+        if (locErr) Render.showInputErrMsg('#edit-HP-location', locErr);
+      };
+    });
+  }
+
   const reviewModal = () => {
     $(document).on('click', '.review-modal-btn', function() {
       $('#editDelReviewLabel').html(`Edit review for <code>${$(this).attr('data-HPname')}</code>`);
@@ -357,6 +431,7 @@ const Listeners = (() => {
     submitSignUp,
     submitLogIn,
     submitAddHauntedPlace,
+    hpModal,
     reviewModal
   }
 })();
@@ -470,9 +545,21 @@ const Render = (() => {
     } else {
       for (const place of hauntedPlaces) {
         const $tdType = $('<td>', {text: place.Type.name});
-        const $tdName = $('<td>', {text: place.name});
         const $tdDesc = $('<td>', {text: place.description});
         const $tdLoc = $('<td>', {text: place.location});
+        let $tdName;
+        
+        if (authUser.username === user.username) {
+          $tdName = $('<td>', {
+            html: `
+              <button type="button" class="hp-modal-btn btn btn-link p-0" data-toggle="modal" data-target="#editHPModal" data-HPid="${place.id}" data-HPname="${place.name}" data-HPdesc="${place.description}" data-HPloc="${place.location}" data-HPtypeId="${place.TypeId}">
+              ${place.name}
+              </button>
+            `
+          });
+        } else {
+          $tdName = $('<td>', {text: place.name});
+        };
       
         $('#collapseOne tbody').append($('<tr>').append($tdType, $tdName, $tdDesc, $tdLoc));
       };
@@ -500,7 +587,7 @@ const Render = (() => {
             `
           });
         } else {
-          $tdTitle = $('<td>', {text: review.title})
+          $tdTitle = $('<td>', {text: review.title});
         };
       
         $('#collapseTwo tbody').append($('<tr>').append($tdHP, $tdTitle, $tdBody, $tdRating, $tdCreatedAt));

@@ -59,26 +59,36 @@ router.post('/', passport.authenticate('auth-user', {session: false}), (req, res
 
 // update Haunted Place; auth user required -> haunted place must belong to user
 router.put('/:id', passport.authenticate('auth-user-has-place', {session: false}), (req, res) => {
-  HauntedPlace.update({
-    name: req.body.name,
-    description: req.body.description,
-    location: req.body.location,
-    // UserId: req.user.id,
-    TypeId: req.body.TypeId
-  },
-  {
+  HauntedPlace.findOne({
     where: {
-      id: req.params.id
+      name: req.body.name
     }
   }).then(result => {
-    res.json(result); // 1 (successful)
-  }).catch(err => {
-    if (err['errors']) { // validation error
-      res.json({error: err['errors']});
-    } else { // SQL error
-      res.json({error: 'Invalid request.'});
+    if(result && result.id != req.params.id) {
+      res.json({error: 'Must be unique (name already exists)!'})
+    } else {
+      HauntedPlace.update({
+        name: req.body.name,
+        description: req.body.description,
+        location: req.body.location,
+        // UserId: req.user.id,
+        TypeId: req.body.TypeId
+      },
+      {
+        where: {
+          id: req.params.id
+        }
+      }).then(result => {
+        res.json(result); // 1 (successful)
+      }).catch(err => {
+        if (err['errors']) { // validation error
+          res.json({error: err['errors']});
+        } else { // SQL error
+          res.json({error: 'Invalid request.'});
+        };
+      });
     };
-  });;
+  });
 });
 
 // delete Haunted Place; auth user required -> haunted place must belong to user
