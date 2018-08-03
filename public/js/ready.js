@@ -49,15 +49,12 @@ const App = (() => {
       };
 
       if (relPath.includes('/u/') && relPath.indexOf('quickreview') > 0) {
-        if (!user || (user.username !== relPath.split('/')[2])) {
+        if (!user || (user.username.replace(/ /g, ' ') !== relPath.split('/')[2])) {
+          //console
           redirect('/');
         } else {
-          console.log('ON THE QUICK REVIEW PAGE');
           Listeners.reviewForm();
           API.getHauntedPlaces().then(result => {
-            console.log(result);
-
-
             Render.populateHPSelect('#rF-HP-Select', result);
             Render.showSelectedHPInfo($('#rF-HP-Select option:selected'));
             
