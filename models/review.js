@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: true,
         validate: {
           len: {
-            args: [5, 100],
+            args: [5, 500],
             msg: 'Content must be between 5 to 100 characters.'
           }
         }
