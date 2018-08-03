@@ -86,6 +86,20 @@ module.exports = function(app) {
     res.render('review');
   });
 
+  app.get('/p/:haunted_place', (req, res) => {
+    HauntedPlace.findOne({
+      where: {
+        name: req.params.haunted_place.replace(/_/g, ' ')
+      }
+    }).then(place => {
+      if (place) {
+        res.render('hauntedPlace');
+      } else {
+        res.redirect('/home');
+      };
+    });
+  });
+
   app.get('*', (req, res) => {
     res.render('404');
   });
