@@ -43,6 +43,37 @@ module.exports = function(app) {
     });
   });
 
+  app.get('/explore/:type', (req, res) => {
+    Type.findOne({
+      where: {
+        name: req.params.type.replace(/_/g, ' ')
+      }
+    }).then(type => {
+      if (type) {
+        HauntedPlace.findAll({
+          where: {
+            TypeId: type.id
+          }
+        }).then(result => {
+          let places = [];
+
+          for(const place of result) {
+            places.push({
+              imgLink: `/images/HP-${Math.floor(Math.random()*12)+1}.jpg`,
+              urlLink: `/p/${place.name.replace(/ /g, '_')}`,
+              name: place.name,
+              location: place.location,
+              type: type.name
+            });
+          };
+          res.render("places", {places: places});
+        });
+      } else {
+        res.redirect('/home');
+      };
+    });
+  });
+
   app.get('/explore/new', (req, res) => {
     res.render('newHauntedPlace');
   });
