@@ -49,7 +49,7 @@ const App = (() => {
       };
 
       if (relPath.includes('/u/') && relPath.indexOf('quickreview') > 0) {
-        if (!user || (user.username.replace(/ /g, ' ') !== relPath.split('/')[2])) {
+        if (!user || (user.username.replace(/ /g, '_') !== relPath.split('/')[2])) {
           //console
           redirect('/');
         } else {
