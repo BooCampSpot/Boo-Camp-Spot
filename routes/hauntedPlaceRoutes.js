@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const HauntedPlace = require('../models').HauntedPlace;
+const Type = require('../models').Type;
 const Review = require('../models').Review;
 const passport = require('passport');
 require('../config/passport');
 
-// get all Haunted Places; no auth required
+// get all Haunted Places, with Type; no auth required
 router.get('/', (req, res) => {
-  HauntedPlace.findAll({}).then(result => {
+  HauntedPlace.findAll({
+    include: [{
+      model: Type
+    }]
+  }).then(result => {
     res.json(result);
   });
 });
@@ -19,8 +24,7 @@ router.get('/:id', (req, res) => {
       id: req.params.id
     },
     include: [{
-      model: Review, 
-      required: true
+      model: Review
     }]
   }).then(result => {
     res.json(result);
@@ -59,26 +63,36 @@ router.post('/', passport.authenticate('auth-user', {session: false}), (req, res
 
 // update Haunted Place; auth user required -> haunted place must belong to user
 router.put('/:id', passport.authenticate('auth-user-has-place', {session: false}), (req, res) => {
-  HauntedPlace.update({
-    name: req.body.name,
-    description: req.body.description,
-    location: req.body.location,
-    // UserId: req.user.id,
-    TypeId: req.body.TypeId
-  },
-  {
+  HauntedPlace.findOne({
     where: {
-      id: req.params.id
+      name: req.body.name
     }
   }).then(result => {
-    res.json(result); // 1 (successful)
-  }).catch(err => {
-    if (err['errors']) { // validation error
-      res.json({error: err['errors']});
-    } else { // SQL error
-      res.json({error: 'Invalid request.'});
+    if(result && result.id != req.params.id) {
+      res.json({error: 'Must be unique (name already exists)!'})
+    } else {
+      HauntedPlace.update({
+        name: req.body.name,
+        description: req.body.description,
+        location: req.body.location,
+        // UserId: req.user.id,
+        TypeId: req.body.TypeId
+      },
+      {
+        where: {
+          id: req.params.id
+        }
+      }).then(result => {
+        res.json(result); // 1 (successful)
+      }).catch(err => {
+        if (err['errors']) { // validation error
+          res.json({error: err['errors']});
+        } else { // SQL error
+          res.json({error: 'Invalid request.'});
+        };
+      });
     };
-  });;
+  });
 });
 
 // delete Haunted Place; auth user required -> haunted place must belong to user

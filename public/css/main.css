@@ -22,6 +22,40 @@ html { /* for sticky footer */
   display: none;
 }
 
+/* User Page CSS */
+.user-panel {
+  background-color: #ff7f5080;
+}
+.user-panel img {
+  border-radius: 50%;
+  border: 1px solid #ff7f50;
+}
+.user-info {
+  background-color: #ffffff70;
+}
+
+/* Place(s) CSS */
+#placeType {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+.badge-custom {
+  border-radius: 0;
+  background-color: #e6e6fa50;
+  color: white;
+}
+.p-img {
+  max-height: 420px;
+  object-fit: cover;
+}
+.reviews-container {
+  background-color: #ff7f5080;
+}
+.review-item {
+  background-color: #ffffff70;
+}
+
 /* Footer CSS */
 .sticky-footer {
   position: absolute;

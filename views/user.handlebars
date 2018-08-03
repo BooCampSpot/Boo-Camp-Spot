@@ -1,0 +1,84 @@
+<div class="container">
+  <div class="row user-panel py-3">
+    <div class="col-auto">
+      <img id="user-photo" src="" alt="" class="m-2">
+    </div>
+    <div class="col">
+      <div class="user-info px-3 py-2">
+        <h4 id="user-username"></h5>
+        <h6 id="user-email"></h6>
+        <h6 class="font-weight-normal font-italic">Boo day: <span id="user-createdAt" ></span></h6>
+      </div> 
+    </div>
+    <div class="col-12 mt-3">
+
+      <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Haunted Places
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="alert alert-info" role="alert" style="display: none;">
+                User has not created any Haunted Places!
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Location</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Reviews
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+              <div class="alert alert-info" role="alert" style="display: none;">
+                User has not created any Reviews!
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Haunted Place</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Body</th>
+                      <th scope="col">Rating</th>
+                      <th scope="col">Created At</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{> editHPModal }}
+{{> editReviewModal }}

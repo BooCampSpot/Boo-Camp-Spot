@@ -1,8 +1,23 @@
 const App = (() => {
   const init = (relPath, user) => {
     Listeners.signout();
+
+    if(user) {
+      $('#HP-add-review-btn').attr('href', `/u/${user.username.replace(/ /g, '_')}/quickreview`);
+    } else {
+      $('#HP-add-review-btn').attr('href', '/login');
+    };
+
     API.getTypes().then(types => {
       Render.initNavbar(types, user);
+
+      if(relPath === '/home') {
+        if(!user) {
+          $('#reviewIcon').attr('href', '/login');
+        } else {
+          $('#reviewIcon').attr('href', `/u/${user.username.replace(/ /g, '_')}/quickreview`);
+        };
+      }
 
       if(relPath === '/explore/new') {
         if(!user) {
@@ -31,6 +46,42 @@ const App = (() => {
         } else {
           redirect(`/u/${user.username}`);
         };
+      };
+
+      if (relPath.includes('/u/') && relPath.indexOf('quickreview') > 0) {
+        if (!user || (user.username !== relPath.split('/')[2])) {
+          redirect('/');
+        } else {
+          console.log('ON THE QUICK REVIEW PAGE');
+          Listeners.reviewForm();
+          API.getHauntedPlaces().then(result => {
+            console.log(result);
+
+
+            Render.populateHPSelect('#rF-HP-Select', result);
+            Render.showSelectedHPInfo($('#rF-HP-Select option:selected'));
+            
+          });
+        };
+      }
+
+      if(relPath.includes('/u/') && relPath.indexOf('quickreview') < 0) {
+        if (!user) {
+          redirect('/login');
+        } else {
+          const username = relPath.slice(3).replace(/ /g, ' ');
+          API.getUserData(username).then(result => {
+            if(result) {
+              Listeners.hpModal();
+              Listeners.reviewModal();
+              Render.populateTypeSelect('#edit-HP-type', types);
+              // result is array: [0] -> user data, [1] gravatarUrl
+              Render.initUserPage(result[0], result[1].gravatarUrl, user);
+            } else {
+              redirect('/');
+            };
+          });
+        }
       };
     });
   }
@@ -82,9 +133,21 @@ const Auth = (() => {
 })();
 
 const API = (() => {
+  const getUserData = (username) => {
+    return $.get({
+      url: `/api/v1/users/${username}`
+    });
+  } 
+
   const getTypes = () => {
     return $.get({
       url: '/api/v1/types'
+    });
+  }
+
+  const getHauntedPlaces = () => {
+    return $.get({
+      url: '/api/v1/hauntedplaces'
     });
   }
 
@@ -98,9 +161,57 @@ const API = (() => {
     });
   }
 
+  const updateHauntedPlace = (HPid, updatedHP) => {
+    return $.ajax({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}`,
+      type: 'PUT',
+      data: updatedHP
+    });
+  }
+
+  const createReview = (HPid, newReview) => {
+    return $.post({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}/reviews`,
+      data: newReview
+    });
+  };
+
+  const updateReview = (HPid, Rid, updatedReview) => {
+    return $.ajax({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}/reviews/${Rid}`,
+      type: 'PUT',
+      data: updatedReview
+    });
+  }
+
+  const deleteReview = (HPid, Rid) => {
+    return $.ajax({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}/reviews/${Rid}`,
+      type: 'DELETE'
+    });
+  }
+
   return {
+    getUserData,
     getTypes,
-    createHauntedPlace
+    getHauntedPlaces,
+    createHauntedPlace,
+    updateHauntedPlace,
+    createReview,
+    updateReview,
+    deleteReview
   }
 })();
 
@@ -228,11 +339,191 @@ const Listeners = (() => {
     });
   }
 
+  const hpModal = () => {
+    $(document).on('click', '.hp-modal-btn', function() {
+      $('#editHPLabel').html(`Edit <code>${$(this).attr('data-HPname')}</code>`);
+      $('#edit-HP-name').val($(this).attr('data-HPname'));
+      $('#edit-HP-description').val($(this).attr('data-HPdesc'));
+      $('#edit-HP-location').val($(this).attr('data-HPloc'));
+      $(`#edit-HP-type option[value="${$(this).attr('data-HPtypeId')}"]`).prop("selected", true);
+
+      $('#update-HP-btn').attr('data-HPid', $(this).attr('data-HPid'));
+    });
+
+    $('#update-HP-btn').click(function() {
+      const updatedHP = {
+        TypeId: parseInt($(`#edit-HP-type option:selected`).val()),  
+        name: $('#edit-HP-name').val(),
+        description: $('#edit-HP-description').val(),
+        location: $('#edit-HP-location').val() 
+      }
+      const validationResult = Validate.newPlace(updatedHP);
+
+      if(validationResult.isValid) {
+        const HPid = $(this).attr('data-HPid');
+
+        API.updateHauntedPlace(HPid, updatedHP).then(result => {
+          if (result[0] === 1) {
+            const msg = 'Haunted Place successfully updated!';
+            const newType = $(`#edit-HP-type option[value="${updatedHP.TypeId}"]`).text();
+            // update the haunted place in table (btn/link data and rows)
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).text(updatedHP.name);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPtypeId', updatedHP.TypeId);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPname', updatedHP.name);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPdesc', updatedHP.description);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).attr('data-HPloc', updatedHP.location);
+
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).parent().parent().find('td:eq(0)').text(newType);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).parent().parent().find('td:eq(2)').text(updatedHP.description);
+            $(`.hp-modal-btn[data-HPid="${HPid}"]`).parent().parent().find('td:eq(3)').text(updatedHP.location);
+            //
+            Render.showFormOverlayMsg('#edit-HP-form', msg);
+            setTimeout(() => {
+              $('#editHPModal').modal('toggle');
+            }, 2000);
+          } else if (result.error === 'Must be unique (name already exists)!') {
+            Render.showInputErrMsg('#edit-HP-name', result.error);
+          } else { // other error (unexpected)
+            Render.showFormOverlayMsg('#edit-HP-form', 'Unauthorized request.');
+          };
+        });
+
+      } else {
+        const nameErr = validationResult.errors.name;
+        const descErr = validationResult.errors.description;
+        const locErr = validationResult.errors.location;
+
+        if (nameErr) Render.showInputErrMsg('#edit-HP-name', nameErr);
+        if (descErr) Render.showInputErrMsg('#edit-HP-description', descErr);
+        if (locErr) Render.showInputErrMsg('#edit-HP-location', locErr);
+      };
+    });
+  }
+
+  const reviewModal = () => {
+    $(document).on('click', '.review-modal-btn', function() {
+      $('#editDelReviewLabel').html(`Edit review for <code>${$(this).attr('data-HPname')}</code>`);
+      $('#edit-review-title').val($(this).attr('data-Rtitle'));
+      $('#edit-review-body').val($(this).attr('data-Rbody'));
+      $(`#edit-review-rating option[value="${$(this).attr('data-Rrating')}"]`).prop("selected", true);
+
+      $('#update-review-btn').attr('data-HPid', $(this).attr('data-HPid'));
+      $('#update-review-btn').attr('data-Rid', $(this).attr('data-Rid'));
+      $('#delete-review-btn').attr('data-HPid', $(this).attr('data-HPid'));
+      $('#delete-review-btn').attr('data-Rid', $(this).attr('data-Rid'));
+    });
+
+    $('#update-review-btn').click(function() {
+      const updatedReview = {
+        title: $('#edit-review-title').val(),
+        body: $('#edit-review-body').val(),
+        rating: parseInt($(`#edit-review-rating option:selected`).val())  
+      }
+      const validationResult = Validate.updatedReview(updatedReview);
+
+      if(validationResult.isValid) {
+        const HPid = $(this).attr('data-HPid');
+        const Rid = $(this).attr('data-Rid');
+
+        API.updateReview(HPid, Rid, updatedReview).then(result => {
+          if (result[0] === 1) {
+            const msg = 'Review successfully updated!'
+            // update the review in table (btn/link data and rows)
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).text(updatedReview.title);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).attr('data-Rtitle', updatedReview.title);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).attr('data-Rbody', updatedReview.body);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).attr('data-Rrating', updatedReview.rating);
+
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).parent().parent().find('td:eq(2)').text(updatedReview.body);
+            $(`.review-modal-btn[data-Rid="${Rid}"]`).parent().parent().find('td:eq(3)').text(updatedReview.rating);
+            //
+            Render.showFormOverlayMsg('#edit-review-form', msg);
+            setTimeout(() => {
+              $('#editDelReviewModal').modal('toggle');
+            }, 2000);
+          } else {  // other error (unexpected)
+            Render.showFormOverlayMsg('#edit-review-form', 'Unauthorized request.');
+          };
+        });
+      } else {
+        const titleErr = validationResult.errors.title;
+        const bodyErr = validationResult.errors.body;
+  
+        if (titleErr) Render.showInputErrMsg('#edit-review-title', titleErr);
+        if (bodyErr) Render.showInputErrMsg('#edit-review-body', bodyErr);
+      };
+    });
+
+    $('#delete-review-btn').click(function() {
+      const HPid = $(this).attr('data-HPid');
+      const Rid = $(this).attr('data-Rid');
+
+      API.deleteReview(HPid, Rid).then(result => {
+        if (result === 1) {
+          const msg = 'Review successfully deleted!';
+          // remove review from table
+          $(`.review-modal-btn[data-Rid="${Rid}"]`).parent().parent().remove();
+          //
+          Render.showFormOverlayMsg('#edit-review-form', msg);
+          setTimeout(() => {
+            $('#editDelReviewModal').modal('toggle');
+          }, 2000);
+        } else {  // other error (unexpected)
+          Render.showFormOverlayMsg('#edit-review-form', 'Unauthorized request.');
+        };
+      }); 
+    });
+  }
+
+  const reviewForm = () => {
+    $('#rF-HP-Select').on('change', function() {
+      const $selectedOption = $(this).find('option:selected');
+      Render.showSelectedHPInfo($selectedOption);
+    });
+
+    // CONSOLE
+    $('#rF-submit-btn').click((e) => {
+      e.preventDefault();
+      
+      const hpId = $('#rF-HP-Select option:selected').val();
+      const newReview = {
+        title: $('#reviewTitle').val(),
+        body: $('#reviewText').val(),
+        rating: $('.reviewStar[data-selected="true"]').attr('data-rating'), 
+      }
+      const validationResult = Validate.updatedReview(newReview);
+
+      if (validationResult.isValid) {
+        API.createReview(hpId, newReview).then(result => {
+          if (result.error) {
+            Render.showFormOverlayMsg('#reviewForm', 'Unauthorized request.');
+          } else {
+            Render.showFormOverlayMsg('#reviewForm', 'Review successfully created!');
+            setTimeout(() => {
+              App.redirect('/home');
+            }, 2000);
+          };
+        });
+      } else {
+        const titleErr = validationResult.errors.title;
+        const bodyErr = validationResult.errors.body;
+        const ratingErr = validationResult.errors.rating;
+  
+        if (titleErr) Render.showInputErrMsg('#reviewTitle', titleErr);
+        if (bodyErr) Render.showInputErrMsg('#reviewText', bodyErr);
+        if (ratingErr) Render.showInputErrMsg('.star-rating', ratingErr);
+      };
+    });
+  };
+
   return {
     signout,
     submitSignUp,
     submitLogIn,
-    submitAddHauntedPlace
+    submitAddHauntedPlace,
+    hpModal,
+    reviewModal,
+    reviewForm
   }
 })();
 
@@ -289,9 +580,25 @@ const Validate = (() => {
     return result;
   }
 
+  const updatedReview = (updatedReview) => {
+    const result = {
+      isValid: true,
+      errors: {
+        title: lengthErrMsg(updatedReview.title, 5, 100),
+        body: lengthErrMsg(updatedReview.body, 5, 500),
+        rating: updatedReview.rating ? '' : 'Select a rating!'
+      }
+    };
+    if (result.errors.title || result.errors.body || result.errors.rating) {
+      result.isValid = false;
+    };
+    return result;
+  }
+ 
   return {
     newUser,
-    newPlace
+    newPlace,
+    updatedReview
   }
 })();
 
@@ -314,6 +621,92 @@ const Render = (() => {
       $('#navbar-signout').css('display', 'block');
     };
   };
+
+  const initUserPage = (user, gravatarUrl, authUser) => {
+    const hauntedPlaces = user.HauntedPlaces;
+    const reviews = user.Reviews;
+
+    $('#user-photo').attr('src', gravatarUrl);
+    $('#user-username').text(user.username);
+    $('#user-email').text(user.email);
+    $('#user-createdAt').text(moment.utc(user.createdAt).local().format('MMM D, YYYY'));
+
+    if (!hauntedPlaces.length) {
+      $('#collapseOne table').css('display', 'none');
+      $('#collapseOne .alert').css('display', 'block');
+    } else {
+      for (const place of hauntedPlaces) {
+        const $tdType = $('<td>', {text: place.Type.name});
+        const $tdDesc = $('<td>', {text: place.description});
+        const $tdLoc = $('<td>', {text: place.location});
+        let $tdName;
+        
+        if (authUser.username === user.username) {
+          $tdName = $('<td>', {
+            html: `
+              <button type="button" class="hp-modal-btn btn btn-link p-0" data-toggle="modal" data-target="#editHPModal" data-HPid="${place.id}" data-HPname="${place.name}" data-HPdesc="${place.description}" data-HPloc="${place.location}" data-HPtypeId="${place.TypeId}">
+              ${place.name}
+              </button>
+            `
+          });
+        } else {
+          $tdName = $('<td>', {text: place.name});
+        };
+      
+        $('#collapseOne tbody').append($('<tr>').append($tdType, $tdName, $tdDesc, $tdLoc));
+      };
+    };
+
+    if(!reviews.length) {
+      $('#collapseTwo table').css('display', 'none');
+      $('#collapseTwo .alert').css('display', 'block');
+    } else {
+      for (const review of reviews) {
+        const $tdHP = $('<td>', {
+          text: review.HauntedPlace ? review.HauntedPlace.name : '' 
+        });
+        const $tdBody = $('<td>', {text: review.body});
+        const $tdRating = $('<td>', {text: review.rating});
+        const $tdCreatedAt = $('<td>', {text: moment.utc(user.createdAt).local().format('ddd MMM D, YYYY h:mm a')});
+        let $tdTitle;
+  
+        if (authUser.username === user.username && review.HauntedPlace) {
+          $tdTitle = $('<td>', {
+            html: `
+              <button type="button" class="review-modal-btn btn btn-link p-0" data-toggle="modal" data-target="#editDelReviewModal" data-Rid="${review.id}" data-Rtitle="${review.title}" data-Rbody="${review.body}" data-Rrating="${review.rating}" data-HPname="${review.HauntedPlace.name}" data-HPid="${review.HauntedPlaceId}">
+              ${review.title}
+              </button>
+            `
+          });
+        } else {
+          $tdTitle = $('<td>', {text: review.title});
+        };
+      
+        $('#collapseTwo tbody').append($('<tr>').append($tdHP, $tdTitle, $tdBody, $tdRating, $tdCreatedAt));
+      };
+    };
+  }
+
+  const showSelectedHPInfo = ($optionWithData) => {
+   $('#rF-HP-type').text(($optionWithData.attr('data-type')));
+   $('#rF-HP-desc').text(($optionWithData.attr('data-desc')));
+   $('#rF-HP-loc').text(($optionWithData.attr('data-loc')));
+  }
+
+  const populateHPSelect = (selector, places) => {
+    const $select = $(selector);
+
+    for (const place of places) {
+      const $option = $('<option>', {
+        text: place.name,
+        value: place.id,
+        'data-desc': place.description,
+        'data-loc': place.location,
+        'data-type': place.Type.name
+      });
+      $select.append($option);
+    };
+  }
 
   const populateTypeSelect = (selector, types) => {
     const $select = $(selector);
@@ -354,6 +747,9 @@ const Render = (() => {
 
   return {
     initNavbar,
+    initUserPage,
+    showSelectedHPInfo,
+    populateHPSelect,
     populateTypeSelect,
     showInputErrMsg,
     showFormOverlayMsg,
