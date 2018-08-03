@@ -4,6 +4,14 @@ const App = (() => {
     API.getTypes().then(types => {
       Render.initNavbar(types, user);
 
+      if(relPath === '/home') {
+        if(!user) {
+          $('#reviewIcon').attr('href', '/login');
+        } else {
+          $('#reviewIcon').attr('href', `/u/${user.username.replace(/ /g, '_')}/quickreview`);
+        };
+      }
+
       if(relPath === '/explore/new') {
         if(!user) {
           const msg = 'You must be signed in to add a new Haunted Place!'
@@ -33,7 +41,24 @@ const App = (() => {
         };
       };
 
-      if(relPath.includes('/u/')) {
+      if (relPath.includes('/u/') && relPath.indexOf('quickreview') > 0) {
+        if (!user || (user.username !== relPath.split('/')[2])) {
+          redirect('/');
+        } else {
+          console.log('ON THE QUICK REVIEW PAGE');
+          Listeners.reviewForm();
+          API.getHauntedPlaces().then(result => {
+            console.log(result);
+
+
+            Render.populateHPSelect('#rF-HP-Select', result);
+            Render.showSelectedHPInfo($('#rF-HP-Select option:selected'));
+            
+          });
+        };
+      }
+
+      if(relPath.includes('/u/') && relPath.indexOf('quickreview') < 0) {
         if (!user) {
           redirect('/login');
         } else {
@@ -113,6 +138,12 @@ const API = (() => {
     });
   }
 
+  const getHauntedPlaces = () => {
+    return $.get({
+      url: '/api/v1/hauntedplaces'
+    });
+  }
+
   const createHauntedPlace = (newPlace) => {
     return $.post({
       beforeSend: (request) => {
@@ -133,6 +164,16 @@ const API = (() => {
       data: updatedHP
     });
   }
+
+  const createReview = (HPid, newReview) => {
+    return $.post({
+      beforeSend: (request) => {
+        request.setRequestHeader('Authorization', `Bearer ${Auth.getAccessToken()}`);
+      },
+      url: `/api/v1/hauntedplaces/${HPid}/reviews`,
+      data: newReview
+    });
+  };
 
   const updateReview = (HPid, Rid, updatedReview) => {
     return $.ajax({
@@ -158,8 +199,10 @@ const API = (() => {
   return {
     getUserData,
     getTypes,
+    getHauntedPlaces,
     createHauntedPlace,
     updateHauntedPlace,
+    createReview,
     updateReview,
     deleteReview
   }
@@ -409,7 +452,6 @@ const Listeners = (() => {
       const Rid = $(this).attr('data-Rid');
 
       API.deleteReview(HPid, Rid).then(result => {
-        console.log(result);
         if (result === 1) {
           const msg = 'Review successfully deleted!';
           // remove review from table
@@ -426,13 +468,55 @@ const Listeners = (() => {
     });
   }
 
+  const reviewForm = () => {
+    $('#rF-HP-Select').on('change', function() {
+      const $selectedOption = $(this).find('option:selected');
+      Render.showSelectedHPInfo($selectedOption);
+    });
+
+    // CONSOLE
+    $('#rF-submit-btn').click((e) => {
+      e.preventDefault();
+      
+      const hpId = $('#rF-HP-Select option:selected').val();
+      const newReview = {
+        title: $('#reviewTitle').val(),
+        body: $('#reviewText').val(),
+        rating: $('.reviewStar[data-selected="true"]').attr('data-rating'), 
+      }
+      const validationResult = Validate.updatedReview(newReview);
+
+      if (validationResult.isValid) {
+        API.createReview(hpId, newReview).then(result => {
+          if (result.error) {
+            Render.showFormOverlayMsg('#reviewForm', 'Unauthorized request.');
+          } else {
+            Render.showFormOverlayMsg('#reviewForm', 'Review successfully created!');
+            setTimeout(() => {
+              App.redirect('/home');
+            }, 2000);
+          };
+        });
+      } else {
+        const titleErr = validationResult.errors.title;
+        const bodyErr = validationResult.errors.body;
+        const ratingErr = validationResult.errors.rating;
+  
+        if (titleErr) Render.showInputErrMsg('#reviewTitle', titleErr);
+        if (bodyErr) Render.showInputErrMsg('#reviewText', bodyErr);
+        if (ratingErr) Render.showInputErrMsg('.star-rating', ratingErr);
+      };
+    });
+  };
+
   return {
     signout,
     submitSignUp,
     submitLogIn,
     submitAddHauntedPlace,
     hpModal,
-    reviewModal
+    reviewModal,
+    reviewForm
   }
 })();
 
@@ -495,9 +579,10 @@ const Validate = (() => {
       errors: {
         title: lengthErrMsg(updatedReview.title, 5, 100),
         body: lengthErrMsg(updatedReview.body, 5, 500),
+        rating: updatedReview.rating ? '' : 'Select a rating!'
       }
     };
-    if (result.errors.title || result.errors.body) {
+    if (result.errors.title || result.errors.body || result.errors.rating) {
       result.isValid = false;
     };
     return result;
@@ -595,6 +680,27 @@ const Render = (() => {
     };
   }
 
+  const showSelectedHPInfo = ($optionWithData) => {
+   $('#rF-HP-type').text(($optionWithData.attr('data-type')));
+   $('#rF-HP-desc').text(($optionWithData.attr('data-desc')));
+   $('#rF-HP-loc').text(($optionWithData.attr('data-loc')));
+  }
+
+  const populateHPSelect = (selector, places) => {
+    const $select = $(selector);
+
+    for (const place of places) {
+      const $option = $('<option>', {
+        text: place.name,
+        value: place.id,
+        'data-desc': place.description,
+        'data-loc': place.location,
+        'data-type': place.Type.name
+      });
+      $select.append($option);
+    };
+  }
+
   const populateTypeSelect = (selector, types) => {
     const $select = $(selector);
 
@@ -635,6 +741,8 @@ const Render = (() => {
   return {
     initNavbar,
     initUserPage,
+    showSelectedHPInfo,
+    populateHPSelect,
     populateTypeSelect,
     showInputErrMsg,
     showFormOverlayMsg,

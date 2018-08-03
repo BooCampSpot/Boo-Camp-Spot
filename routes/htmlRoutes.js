@@ -14,16 +14,6 @@ module.exports = function(app) {
     res.render("home");
   });
 
-  app.get("/explore", function(req, res) {
-    HauntedPlace.findAll({}).then(result => {
-      res.render("places", {places: result});
-    });
-  });
-
-  app.get('/p/:hauntedplace/review', (req, res) => {
-    res.render("review")
-  });
-
   app.get('/signup', (req, res) => {
     res.render('signup');
   });
@@ -32,8 +22,18 @@ module.exports = function(app) {
     res.render('login');
   });
 
+  app.get("/explore", function(req, res) {
+    HauntedPlace.findAll({}).then(result => {
+      res.render("places", {places: result});
+    });
+  });
+
   app.get('/u/:username', (req, res) => {
     res.render('user');
+  });
+
+  app.get('/u/:username/quickreview', (req, res) => {
+    res.render('review');
   });
 
   app.get('/explore/new', (req, res) => {

@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const HauntedPlace = require('../models').HauntedPlace;
+const Type = require('../models').Type;
 const Review = require('../models').Review;
 const passport = require('passport');
 require('../config/passport');
 
-// get all Haunted Places; no auth required
+// get all Haunted Places, with Type; no auth required
 router.get('/', (req, res) => {
-  HauntedPlace.findAll({}).then(result => {
+  HauntedPlace.findAll({
+    include: [{
+      model: Type
+    }]
+  }).then(result => {
     res.json(result);
   });
 });
@@ -19,8 +24,7 @@ router.get('/:id', (req, res) => {
       id: req.params.id
     },
     include: [{
-      model: Review, 
-      required: true
+      model: Review
     }]
   }).then(result => {
     res.json(result);
