@@ -20,10 +20,10 @@ This app allows users to view haunted places from around the world. Each place h
 # Demo videos
 ![boo!campspot-landing](demo/landingpage.gif)
 ![boo!campspot-explore](demo/explore.gif)
-![boo!campspot-places-filter](demo/places-filter.gif)
-![boo!campspot-create](demo/create.gif)
-![boo!campspot-review](demo/review.gif)
-![boo!campspot-signup](demo/signup.gif)
+![boo!campspot-places-filter](demo/Places-filter.gif)
+![boo!campspot-create](demo/Create.gif)
+![boo!campspot-review](demo/Review.gif)
+![boo!campspot-signup](demo/Signup.gif)
 
 # Future Functionality
 * Interactive map displaying haunted places
