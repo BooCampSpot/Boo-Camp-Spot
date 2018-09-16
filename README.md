@@ -56,6 +56,8 @@ Users who have signed up can create new places as well as submit their own revie
 
 ## Demo
 
+* [deployed link](https://boocamp-spot.herokuapp.com/)
+
 * Haunted places can be explored by clicking 'Places to see' on the home page.
 
   ![boo!campspot-explore](demo/explore.gif)
@@ -66,15 +68,15 @@ Users who have signed up can create new places as well as submit their own revie
 
 * Reviews can be added by clicking 'Submit a review' on the home page (logged in users only).
 
-  ![boo!campspot-review](demo/review.gif)
+  ![boo!campspot-review](demo/submit_review.gif)
 
 * Haunted places can be created by clicking 'Report a sighting!' on the home page or the '+' button on the navbar (logged in users only).
 
-  ![boo!campspot-create](demo/create.gif)
+  ![boo!campspot-create](demo/create_hp.gif)
 
 * New users who sign up will be redirected to a user profile page, which will show their gravatar image, username, email, and 'boo day' (date the account was created). Any haunted places or reviews they create will also be visible on their profile page.
 
-  ![boo!campspot-signup](demo/signup.gif)
+  ![boo!campspot-signup](demo/user_signup.gif)
 
 ## Technologies
 
