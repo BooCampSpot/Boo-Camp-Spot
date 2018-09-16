@@ -24,6 +24,20 @@ Users who have signed up can create new places as well as submit their own revie
 
 ### Front End HTML Routes
 
+|HTML Route              |Description                  |
+|------------------------|-----------------------------|
+|/                       |landing page                 |
+|/home                   |home page                    |
+|/signup                 |signup form                  |
+|/login                  |login form                   |
+|/explore                |view haunted places          |
+|/explore/new            |create new haunted place form|
+|/explore/:type          |view haunted places by type  |
+|/u/:username            |user profile/dashboard       |
+|/u/:username/quickreview|create new review form       |
+|/p/:haunted_place       |specific haunted place page  |
+
+
 ### Back End API Routes
 
 |Method|Endpoint(base: /api/v1)                     |Functionality                                           |
