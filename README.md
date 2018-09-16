@@ -22,6 +22,10 @@ Users who have signed up can create new places as well as submit their own revie
 
 ## About
 
+### Overview
+
+This app uses a node.js/express server and a SQL database for the backend. The files served to the front end are created using handlebars templates (server-side rendering). However, there is still a significant amount of client-side rendering. For example, some of the data in the front end is loaded via AJAX queries to backend API routes and subsequent dynamic rendering. Authentication is accomplished via JSON web tokens and passport.
+
 ### Front End HTML Routes
 
 |HTML Route              |Description                  |
@@ -36,7 +40,6 @@ Users who have signed up can create new places as well as submit their own revie
 |/u/:username            |user profile/dashboard       |
 |/u/:username/quickreview|create new review form       |
 |/p/:haunted_place       |specific haunted place page  |
-
 
 ### Back End API Routes
 
